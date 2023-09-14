@@ -1,0 +1,27 @@
+---
+title: "lab1"
+author: "Полянская Полина Алексеевна"
+format:   
+  md:
+    output-file: README.md
+editor_options: 
+  chunk_output_type: inline
+---
+
+Создание примера отчета в RStudio 
+
+## Цель
+
+1.   \n
+2.   \n
+
+## Исходные данные
+
+1. Ноутбук с ОС Windows 10
+2. RStudio
+
+## Решение задачи
+
+```{r}
+
+```
