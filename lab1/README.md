@@ -178,7 +178,7 @@ dir()
 ```
 
     [1] "lab1.qmd"       "lab1.rmarkdown" "mytest2.R"      "mytest3.R"     
-    [5] "README.md"      "testdir"        "testdir2"      
+    [5] "README.md"     
 
 ``` r
 ?list.files
@@ -210,8 +210,6 @@ called “testdir”.
 dir.create("testdir")
 ```
 
-    Warning in dir.create("testdir"): 'testdir' уже существует
-
 Use setwd(“testdir”) to set your working directory to “testdir”.
 
 ``` r
@@ -234,7 +232,7 @@ list.files()
 ```
 
     [1] "lab1.qmd"       "lab1.rmarkdown" "mytest.R"       "mytest2.R"     
-    [5] "mytest3.R"      "README.md"      "testdir"        "testdir2"      
+    [5] "mytest3.R"      "README.md"      "testdir"       
 
 Check to see if “mytest.R” exists in the working directory using the
 file.exists() function.
@@ -252,9 +250,9 @@ file.info("mytest.R")
 ```
 
              size isdir mode               mtime               ctime
-    mytest.R    0 FALSE  666 2023-09-14 15:35:59 2023-09-14 15:35:59
+    mytest.R    0 FALSE  666 2023-09-14 15:40:22 2023-09-14 15:40:22
                            atime exe
-    mytest.R 2023-09-14 15:35:59  no
+    mytest.R 2023-09-14 15:40:22  no
 
 Change the name of the file “mytest.R” to “mytest2.R” by using
 file.rename().
@@ -307,9 +305,6 @@ dir.create() and file.path().
 ``` r
 dir.create(file.path('testdir2', 'testdir3'), recursive = TRUE)
 ```
-
-    Warning in dir.create(file.path("testdir2", "testdir3"), recursive = TRUE):
-    'testdir2\testdir3' уже существует
 
 Go back to your original working directory using setwd(). (Recall that
 we created the variable old.dir with the full path for the orginal
@@ -517,3 +512,8 @@ paste(LETTERS, 1:4, sep = "-")
      [1] "A-1" "B-2" "C-3" "D-4" "E-1" "F-2" "G-3" "H-4" "I-1" "J-2" "K-3" "L-4"
     [13] "M-1" "N-2" "O-3" "P-4" "Q-1" "R-2" "S-3" "T-4" "U-1" "V-2" "W-3" "X-4"
     [25] "Y-1" "Z-2"
+
+## Вывод
+
+Я ознакомилась с основным синтаксисом языка R. Было пройдено 4 урока из
+пакета swirl.
