@@ -252,9 +252,9 @@ file.info("mytest.R")
 ```
 
              size isdir mode               mtime               ctime
-    mytest.R    0 FALSE  666 2023-09-14 15:22:58 2023-09-14 15:22:58
+    mytest.R    0 FALSE  666 2023-09-14 15:35:59 2023-09-14 15:35:59
                            atime exe
-    mytest.R 2023-09-14 15:22:58  no
+    mytest.R 2023-09-14 15:35:59  no
 
 Change the name of the file “mytest.R” to “mytest2.R” by using
 file.rename().
@@ -414,3 +414,106 @@ rep(c(0, 1, 2), each = 10)
      [1] 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 2 2 2
 
 ### 4: Vectors
+
+``` r
+num_vect <- c(0.5, 55, -10, 6)
+```
+
+Use tf \<- num_vect \< 1 to assign the result of num_vect \< 1 to a
+variable called tf.
+
+``` r
+tf <- num_vect < 1
+```
+
+What do you think tf will look like?
+
+1: a single logical value 2: a vector of 4 logical values
+
+2
+
+``` r
+tf
+```
+
+    [1]  TRUE FALSE  TRUE FALSE
+
+``` r
+num_vect >= 6
+```
+
+    [1] FALSE  TRUE FALSE  TRUE
+
+(3 \> 5) & (4 == 4)
+
+1: TRUE 2: FALSE
+
+Выбор:2
+
+(TRUE == TRUE) | (TRUE == FALSE)
+
+1: FALSE 2: TRUE
+
+Выбор:2
+
+((111 \>= 111) | !(TRUE)) & ((4 + 1) == 5)
+
+1: FALSE 2: TRUE
+
+Выбор:2
+
+``` r
+my_char <- c("My", "name", "is")
+```
+
+``` r
+my_char
+```
+
+    [1] "My"   "name" "is"  
+
+``` r
+paste(my_char, collapse = " ")
+```
+
+    [1] "My name is"
+
+``` r
+my_name <- c(my_char, "Polina")
+```
+
+``` r
+my_name
+```
+
+    [1] "My"     "name"   "is"     "Polina"
+
+Now, use the paste() function once more to join the words in my_name
+together into a single character string. Don’t forget to say collapse =
+” “!
+
+``` r
+paste(my_name, collapse = " ")
+```
+
+    [1] "My name is Polina"
+
+``` r
+paste("Hello", "world!", sep = " ")
+```
+
+    [1] "Hello world!"
+
+``` r
+paste(1:3, c("X", "Y", "Z"), sep = "")
+```
+
+    [1] "1X" "2Y" "3Z"
+
+``` r
+paste(LETTERS, 1:4, sep = "-")
+```
+
+     [1] "A-1" "B-2" "C-3" "D-4" "E-1" "F-2" "G-3" "H-4" "I-1" "J-2" "K-3" "L-4"
+    [13] "M-1" "N-2" "O-3" "P-4" "Q-1" "R-2" "S-3" "T-4" "U-1" "V-2" "W-3" "X-4"
+    [25] "Y-1" "Z-2"

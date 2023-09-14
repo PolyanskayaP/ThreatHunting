@@ -282,3 +282,85 @@ rep(c(0, 1, 2), each = 10)
 
 ### 4: Vectors
 
+```{r}
+num_vect <- c(0.5, 55, -10, 6)
+```
+
+Use tf <- num_vect < 1 to assign the result of num_vect < 1 to a variable called tf.
+```{r}
+tf <- num_vect < 1
+```
+
+What do you think tf will look like?
+
+1: a single logical value
+2: a vector of 4 logical values
+
+2
+
+```{r}
+tf
+```
+
+```{r}
+num_vect >= 6
+```
+
+ (3 > 5) & (4 == 4)
+
+1: TRUE
+2: FALSE
+
+Выбор:2
+
+ (TRUE == TRUE) | (TRUE == FALSE)
+
+1: FALSE
+2: TRUE
+
+Выбор:2
+
+((111 >= 111) | !(TRUE)) & ((4 + 1) == 5)
+
+1: FALSE
+2: TRUE
+
+Выбор:2
+
+```{r}
+my_char <- c("My", "name", "is")
+```
+
+```{r}
+my_char
+```
+
+```{r}
+paste(my_char, collapse = " ")
+```
+
+```{r}
+my_name <- c(my_char, "Polina")
+```
+
+```{r}
+my_name
+```
+
+Now, use the paste() function once more to join the words in my_name together into a single character string. Don't forget to say collapse = " "!
+```{r}
+paste(my_name, collapse = " ")
+```
+
+```{r}
+paste("Hello", "world!", sep = " ")
+```
+
+```{r}
+paste(1:3, c("X", "Y", "Z"), sep = "")
+```
+
+```{r}
+paste(LETTERS, 1:4, sep = "-")
+```
+
