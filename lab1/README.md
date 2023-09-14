@@ -177,7 +177,8 @@ dir().
 dir()
 ```
 
-    [1] "lab1.qmd"       "lab1.rmarkdown" "README.md"     
+    [1] "lab1.qmd"       "lab1.rmarkdown" "mytest2.R"      "mytest3.R"     
+    [5] "README.md"      "testdir"        "testdir2"      
 
 ``` r
 ?list.files
@@ -209,6 +210,8 @@ called “testdir”.
 dir.create("testdir")
 ```
 
+    Warning in dir.create("testdir"): 'testdir' уже существует
+
 Use setwd(“testdir”) to set your working directory to “testdir”.
 
 ``` r
@@ -230,8 +233,8 @@ Let’s check this by listing all the files in the current directory.
 list.files() 
 ```
 
-    [1] "lab1.qmd"       "lab1.rmarkdown" "mytest.R"       "README.md"     
-    [5] "testdir"       
+    [1] "lab1.qmd"       "lab1.rmarkdown" "mytest.R"       "mytest2.R"     
+    [5] "mytest3.R"      "README.md"      "testdir"        "testdir2"      
 
 Check to see if “mytest.R” exists in the working directory using the
 file.exists() function.
@@ -249,9 +252,9 @@ file.info("mytest.R")
 ```
 
              size isdir mode               mtime               ctime
-    mytest.R    0 FALSE  666 2023-09-14 15:05:49 2023-09-14 15:05:49
+    mytest.R    0 FALSE  666 2023-09-14 15:22:58 2023-09-14 15:22:58
                            atime exe
-    mytest.R 2023-09-14 15:05:49  no
+    mytest.R 2023-09-14 15:22:58  no
 
 Change the name of the file “mytest.R” to “mytest2.R” by using
 file.rename().
@@ -268,7 +271,7 @@ Make a copy of “mytest2.R” called “mytest3.R” using file.copy().
 file.copy("mytest2.R", "mytest3.R")
 ```
 
-    [1] TRUE
+    [1] FALSE
 
 Provide the relative path to the file “mytest3.R” by using file.path().
 
@@ -305,6 +308,9 @@ dir.create() and file.path().
 dir.create(file.path('testdir2', 'testdir3'), recursive = TRUE)
 ```
 
+    Warning in dir.create(file.path("testdir2", "testdir3"), recursive = TRUE):
+    'testdir2\testdir3' уже существует
+
 Go back to your original working directory using setwd(). (Recall that
 we created the variable old.dir with the full path for the orginal
 working directory at the start of these questions.)
@@ -314,3 +320,97 @@ setwd(old.dir)
 ```
 
 ### 3: Sequences of Numbers
+
+The simplest way to create a sequence of numbers in R is by using the
+`:` operator. Type 1:20 to see how it works.
+
+``` r
+1:20
+```
+
+     [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20
+
+``` r
+pi:10
+```
+
+    [1] 3.141593 4.141593 5.141593 6.141593 7.141593 8.141593 9.141593
+
+``` r
+15:1
+```
+
+     [1] 15 14 13 12 11 10  9  8  7  6  5  4  3  2  1
+
+``` r
+help(`:`)
+```
+
+``` r
+?`:`
+```
+
+``` r
+seq(1, 20)
+```
+
+     [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20
+
+``` r
+seq(0, 10, by=0.5)
+```
+
+     [1]  0.0  0.5  1.0  1.5  2.0  2.5  3.0  3.5  4.0  4.5  5.0  5.5  6.0  6.5  7.0
+    [16]  7.5  8.0  8.5  9.0  9.5 10.0
+
+``` r
+my_seq <- seq(5, 10, length=30)
+```
+
+``` r
+length(my_seq)
+```
+
+    [1] 30
+
+``` r
+1:length(my_seq)
+```
+
+     [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25
+    [26] 26 27 28 29 30
+
+``` r
+seq(along.with = my_seq)
+```
+
+     [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25
+    [26] 26 27 28 29 30
+
+``` r
+seq_along(my_seq)
+```
+
+     [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25
+    [26] 26 27 28 29 30
+
+``` r
+rep(0, times = 40)
+```
+
+     [1] 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    [39] 0 0
+
+``` r
+rep(c(0, 1, 2), times = 10)
+```
+
+     [1] 0 1 2 0 1 2 0 1 2 0 1 2 0 1 2 0 1 2 0 1 2 0 1 2 0 1 2 0 1 2
+
+``` r
+rep(c(0, 1, 2), each = 10)
+```
+
+     [1] 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 2 2 2
+
+### 4: Vectors
