@@ -126,11 +126,48 @@ starwars %>% filter(height < 170)
     # ℹ 5 more variables: homeworld <chr>, species <chr>, films <list>,
     #   vehicles <list>, starships <list>
 
-### 7. Подсчитать ИМТ (индекс массы тела) для всех персонажей. ИМТ подсчитать по формуле 𝐼 = 𝑚 / ℎ^2 , где 𝑚 – масса (weight), а ℎ – рост (height).
+### 7. Подсчитать ИМТ (индекс массы тела) для всех персонажей. ИМТ подсчитать по формуле 𝐼 = 𝑚 / ℎ^2 , где 𝑚 – масса (mass), а ℎ – рост (height).
 
-### 8. Найти 10 самых “вытянутых” персонажей. “Вытянутость” оценить по отношению массы (mass) к росту
+``` r
+starwars %>% mutate(imt = mass / ((height)^2)) %>%  select (name, height, mass, imt)
+```
 
-(height) персонажей.
+    # A tibble: 87 × 4
+       name               height  mass     imt
+       <chr>               <int> <dbl>   <dbl>
+     1 Luke Skywalker        172    77 0.00260
+     2 C-3PO                 167    75 0.00269
+     3 R2-D2                  96    32 0.00347
+     4 Darth Vader           202   136 0.00333
+     5 Leia Organa           150    49 0.00218
+     6 Owen Lars             178   120 0.00379
+     7 Beru Whitesun lars    165    75 0.00275
+     8 R5-D4                  97    32 0.00340
+     9 Biggs Darklighter     183    84 0.00251
+    10 Obi-Wan Kenobi        182    77 0.00232
+    # ℹ 77 more rows
+
+### 8. Найти 10 самых “вытянутых” персонажей. “Вытянутость” оценить по отношению массы (mass) к росту (height) персонажей.
+
+``` r
+starwars %>% mutate(vyt = mass / height) %>%  arrange(desc(vyt)) %>%  head(10)
+```
+
+    # A tibble: 10 × 15
+       name     height  mass hair_color skin_color eye_color birth_year sex   gender
+       <chr>     <int> <dbl> <chr>      <chr>      <chr>          <dbl> <chr> <chr> 
+     1 Jabba D…    175  1358 <NA>       green-tan… orange         600   herm… mascu…
+     2 Grievous    216   159 none       brown, wh… green, y…       NA   male  mascu…
+     3 IG-88       200   140 none       metal      red             15   none  mascu…
+     4 Owen La…    178   120 brown, gr… light      blue            52   male  mascu…
+     5 Darth V…    202   136 none       white      yellow          41.9 male  mascu…
+     6 Jek Ton…    180   110 brown      fair       blue            NA   male  mascu…
+     7 Bossk       190   113 none       green      red             53   male  mascu…
+     8 Tarfful     234   136 brown      brown      blue            NA   male  mascu…
+     9 Dexter …    198   102 none       brown      yellow          NA   male  mascu…
+    10 Chewbac…    228   112 brown      unknown    blue           200   male  mascu…
+    # ℹ 6 more variables: homeworld <chr>, species <chr>, films <list>,
+    #   vehicles <list>, starships <list>, vyt <dbl>
 
 ### 9. Найти средний возраст персонажей каждой расы вселенной Звездных войн.
 
