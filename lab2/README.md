@@ -85,23 +85,50 @@ starwars %>% glimpse()
 1.  Сколько уникальных рас персонажей (species) представлено в данных?
 
 ``` r
-unique_count <- length(unique(starwars["species", ]))
-unique_count
+starwars %>% distinct(species) %>% n_distinct()
 ```
 
-    [1] 14
+    [1] 38
 
 1.  Найти самого высокого персонажа.
 
-<!-- -->
+``` r
+starwars %>% filter(height == max(height, na.rm = TRUE))
+```
+
+    # A tibble: 1 × 14
+      name      height  mass hair_color skin_color eye_color birth_year sex   gender
+      <chr>      <int> <dbl> <chr>      <chr>      <chr>          <dbl> <chr> <chr> 
+    1 Yarael P…    264    NA none       white      yellow            NA male  mascu…
+    # ℹ 5 more variables: homeworld <chr>, species <chr>, films <list>,
+    #   vehicles <list>, starships <list>
 
 1.  Найти всех персонажей ниже 170
 
-<!-- -->
+``` r
+starwars %>% filter(height < 170)
+```
+
+    # A tibble: 23 × 14
+       name     height  mass hair_color skin_color eye_color birth_year sex   gender
+       <chr>     <int> <dbl> <chr>      <chr>      <chr>          <dbl> <chr> <chr> 
+     1 C-3PO       167    75 <NA>       gold       yellow           112 none  mascu…
+     2 R2-D2        96    32 <NA>       white, bl… red               33 none  mascu…
+     3 Leia Or…    150    49 brown      light      brown             19 fema… femin…
+     4 Beru Wh…    165    75 brown      light      blue              47 fema… femin…
+     5 R5-D4        97    32 <NA>       white, red red               NA none  mascu…
+     6 Yoda         66    17 white      green      brown            896 male  mascu…
+     7 Mon Mot…    150    NA auburn     fair       blue              48 fema… femin…
+     8 Wicket …     88    20 brown      brown      brown              8 male  mascu…
+     9 Nien Nu…    160    68 none       grey       black             NA male  mascu…
+    10 Watto       137    NA black      blue, grey yellow            NA male  mascu…
+    # ℹ 13 more rows
+    # ℹ 5 more variables: homeworld <chr>, species <chr>, films <list>,
+    #   vehicles <list>, starships <list>
 
 1.  Подсчитать ИМТ (индекс массы тела) для всех персонажей. ИМТ
-    подсчитать по формуле 𝐼 = 𝑚 ℎ2 , где 𝑚 – масса (weight), а ℎ – рост
-    (height).
+    подсчитать по формуле 𝐼 = 𝑚 / ℎ^2 , где 𝑚 – масса (weight), а ℎ –
+    рост (height).
 
 <!-- -->
 
@@ -113,12 +140,65 @@ unique_count
 1.  Найти средний возраст персонажей каждой расы вселенной Звездных
     войн.
 
-<!-- -->
+``` r
+starwars %>% group_by(species) %>% summarize(sr_vozr = mean(birth_year, na.rm = TRUE))
+```
+
+    # A tibble: 38 × 2
+       species   sr_vozr
+       <chr>       <dbl>
+     1 Aleena      NaN  
+     2 Besalisk    NaN  
+     3 Cerean       92  
+     4 Chagrian    NaN  
+     5 Clawdite    NaN  
+     6 Droid        53.3
+     7 Dug         NaN  
+     8 Ewok          8  
+     9 Geonosian   NaN  
+    10 Gungan       52  
+    # ℹ 28 more rows
 
 1.  Найти самый распространенный цвет глаз персонажей вселенной Звездных
     войн.
 
-<!-- -->
+``` r
+starwars %>% group_by(eye_color) %>% summarize(count = n()) %>% arrange(desc(count)) %>% head(1)
+```
+
+    # A tibble: 1 × 2
+      eye_color count
+      <chr>     <int>
+    1 brown        21
 
 1.  Подсчитать среднюю длину имени в каждой расе вселенной Звездных
     войн.
+
+``` r
+starwars %>% group_by(species) %>% summarize(sred_dlin_name = mean(nchar(name), na.rm = TRUE)) 
+```
+
+    # A tibble: 38 × 2
+       species   sred_dlin_name
+       <chr>              <dbl>
+     1 Aleena             13   
+     2 Besalisk           15   
+     3 Cerean             12   
+     4 Chagrian           10   
+     5 Clawdite           10   
+     6 Droid               4.83
+     7 Dug                 7   
+     8 Ewok               21   
+     9 Geonosian          17   
+    10 Gungan             11.7 
+    # ℹ 28 more rows
+
+## Оценка результатов
+
+Задания были успешно решены с помощью библиотеки dplyr и языка
+программирования R.
+
+## Вывод
+
+Я ознакомилась с библиотекой dplyr. Были изучены методы анализа данных
+при помощи этой библиотеки.
