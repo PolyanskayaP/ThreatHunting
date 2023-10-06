@@ -16,11 +16,13 @@ basics of programming in R)
 2.  RStudio
 3.  Пакет swirl
 
-## Решение задачи
+## Шаги
+
+### Установка swirl
+
+Нужно ввести install.packages(“swirl”) swirl::swirl()
 
 ### 1: Basic Building Blocks
-
-Нужно ввести swirl::swirl()
 
 ``` r
 5 + 7
@@ -250,9 +252,9 @@ file.info("mytest.R")
 ```
 
              size isdir mode               mtime               ctime
-    mytest.R    0 FALSE  666 2023-09-14 15:40:22 2023-09-14 15:40:22
+    mytest.R    0 FALSE  666 2023-10-06 17:09:01 2023-10-06 17:09:01
                            atime exe
-    mytest.R 2023-09-14 15:40:22  no
+    mytest.R 2023-10-06 17:09:01  no
 
 Change the name of the file “mytest.R” to “mytest2.R” by using
 file.rename().
@@ -513,7 +515,11 @@ paste(LETTERS, 1:4, sep = "-")
     [13] "M-1" "N-2" "O-3" "P-4" "Q-1" "R-2" "S-3" "T-4" "U-1" "V-2" "W-3" "X-4"
     [25] "Y-1" "Z-2"
 
+## Оценка результата
+
+Были получены базовые знания синтаксиса языка программирования R.
+
 ## Вывод
 
-Я ознакомилась с основным синтаксисом языка R. Было пройдено 4 урока из
-пакета swirl.
+Я ознакомилась с основным синтаксисом языка программирования R. Было
+пройдено 4 урока из пакета swirl.
