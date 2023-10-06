@@ -20,7 +20,10 @@ basics of programming in R)
 
 ### Установка swirl
 
-Нужно ввести install.packages(“swirl”) swirl::swirl()
+Нужно ввести
+
+    install.packages("swirl")   
+    swirl::swirl()
 
 ### 1: Basic Building Blocks
 
@@ -254,9 +257,9 @@ file.info("mytest.R")
 ```
 
              size isdir mode               mtime               ctime
-    mytest.R    0 FALSE  666 2023-10-06 17:11:07 2023-10-06 17:11:07
+    mytest.R    0 FALSE  666 2023-10-06 17:13:28 2023-10-06 17:13:28
                            atime exe
-    mytest.R 2023-10-06 17:11:07  no
+    mytest.R 2023-10-06 17:13:28  no
 
 Change the name of the file “mytest.R” to “mytest2.R” by using
 file.rename().

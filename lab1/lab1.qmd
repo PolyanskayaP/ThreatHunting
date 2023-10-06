@@ -25,9 +25,12 @@ editor_options:
 ## Шаги
 
 ### Установка swirl
-Нужно ввести   \n
-install.packages("swirl")   \n
+
+Нужно ввести   
+```{}
+install.packages("swirl")   
 swirl::swirl()
+```
 
 ### 1: Basic Building Blocks
 
