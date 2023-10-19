@@ -8,13 +8,19 @@ basics of programming in R)
 
 1.  Познакомится с синтаксисом языка программирования R
 
-2.  Оформить отчет
+2.  Познакомиться с пакетом swirl
+
+3.  Оформить отчет
 
 ## Исходные данные
 
 1.  Ноутбук с ОС Windows 10
 2.  RStudio
 3.  Пакет swirl
+
+## Задание
+
+Пройти 4 курса по основам языка R.
 
 ## Шаги
 
@@ -257,9 +263,9 @@ file.info("mytest.R")
 ```
 
              size isdir mode               mtime               ctime
-    mytest.R    0 FALSE  666 2023-10-06 17:13:28 2023-10-06 17:13:28
+    mytest.R    0 FALSE  666 2023-10-19 14:21:23 2023-10-19 14:21:23
                            atime exe
-    mytest.R 2023-10-06 17:13:28  no
+    mytest.R 2023-10-19 14:21:23  no
 
 Change the name of the file “mytest.R” to “mytest2.R” by using
 file.rename().
