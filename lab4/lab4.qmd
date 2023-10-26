@@ -30,14 +30,20 @@ editor_options:
 
 #### 1. Импортируйте данные DNS install.packages("") library(tidyverse)
 
- 
 ```{r}
-
+install.packages("tidyverse")
+```
+```{r}
+library(tidyverse)
 ```
 
 ```{r}
-df <- read_csv('C:/!Полина/!7семестр/ИАТПУИБ/ThreatHunting/lab4/header.csv')
+df <- read_csv('C:/!Полина/!7семестр/ИАТПУИБ/ThreatHunting/lab4/header.csv', show_col_types = FALSE)
 ```
+```{r}
+df
+```
+
 
 #### 2. Добавьте пропущенные данные о структуре данных (назначении столбцов)
 #### 3. Преобразуйте данные в столбцах в нужный формат
