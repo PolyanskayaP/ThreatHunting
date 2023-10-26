@@ -40,16 +40,41 @@ library(readr)
 ```
 
 ```{r}
-df <- read.csv('C:/!Полина/!7семестр/ИАТПУИБ/ThreatHunting/lab4/header.csv')
+head_df <- read.csv('C:/ThreatHunting/lab4/header.csv')
 ```
 ```{r}
+head_df
+```
+```{r}
+log <- read_log("C:/ThreatHunting/lab4/dns.log")
+log
+```
+НЕПРАВИЛЬНОООО
+```{r}
+df <- read_tsv("C:/ThreatHunting/lab4/dns.log", show_col_types = FALSE)
 df
 ```
 
 
 #### 2. Добавьте пропущенные данные о структуре данных (назначении столбцов)
+```{r}
+head_df[4, "Field"] <- "dns_proto"
+```
+```{r}
+head_df
+```
+
 #### 3. Преобразуйте данные в столбцах в нужный формат
+```{r}
+
+```
+
+
 #### 4. Просмотрите общую структуру данных с помощью функции glimpse()
+```{r}
+glimpse(head_df)
+```
+
 
 ### Анализ
 
