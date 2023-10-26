@@ -31,6 +31,13 @@ editor_options:
 - загрузить библиотеку dplyr командой library(dplyr)
 - установить пакет nycflights13 командой install.packages('nycflights13')
 - загрузить библиотеку nycflights13 командой library(nycflights13)
+```{r}
+library(dplyr)
+```
+```{r}
+library(nycflights13)
+```
+
 
 ### 1. Сколько встроенных в пакет nycflights13 датафреймов?
 Этот пакет предоставляет 5 датафреймов.
