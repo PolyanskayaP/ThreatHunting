@@ -28,17 +28,19 @@ editor_options:
 
 ### Подготовка данных
 
-#### 1. Импортируйте данные DNS install.packages("") library(tidyverse)
+#### 1. Импортируйте данные DNS 
+Был установлен пакет tidyverse, в котором содержится пакет readr 
+install.packages("tidyverse") 
 
-```{r}
-install.packages("tidyverse")
-```
 ```{r}
 library(tidyverse)
 ```
+```{r}
+library(readr)
+```
 
 ```{r}
-df <- read_csv('C:/!Полина/!7семестр/ИАТПУИБ/ThreatHunting/lab4/header.csv', show_col_types = FALSE)
+df <- read.csv('C:/!Полина/!7семестр/ИАТПУИБ/ThreatHunting/lab4/header.csv')
 ```
 ```{r}
 df
