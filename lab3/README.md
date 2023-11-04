@@ -187,24 +187,128 @@ glimpse(flights)
 
 ### 5. Сколько компаний-перевозчиков (carrier) учитывают эти наборы данных (представлено в наборах данных)?
 
+``` r
+airlines %>% 
+  ncol()
+```
+
+    [1] 2
+
 ### 6. Сколько рейсов принял аэропорт John F Kennedy Intl в мае?
+
+``` r
+faa_jfk <- airports %>%
+  filter(name == "John F Kennedy Intl") %>%
+  select(faa)
+
+flights %>%
+  filter(month == 5 & dest == as.character(faa_jfk)) %>%
+  nrow()
+```
+
+    [1] 0
 
 ### 7. Какой самый северный аэропорт?
 
+``` r
+airports %>%
+  filter(lat == max(lat))
+```
+
+    # A tibble: 1 × 8
+      faa   name                      lat   lon   alt    tz dst   tzone
+      <chr> <chr>                   <dbl> <dbl> <dbl> <dbl> <chr> <chr>
+    1 EEN   Dillant Hopkins Airport  72.3  42.9   149    -5 A     <NA> 
+
 ### 8. Какой аэропорт самый высокогорный (находится выше всех над уровнем моря)?
+
+``` r
+airports %>%
+  filter(alt == max(alt))
+```
+
+    # A tibble: 1 × 8
+      faa   name        lat   lon   alt    tz dst   tzone         
+      <chr> <chr>     <dbl> <dbl> <dbl> <dbl> <chr> <chr>         
+    1 TEX   Telluride  38.0 -108.  9078    -7 A     America/Denver
 
 ### 9. Какие бортовые номера у самых старых самолетов?
 
+``` r
+planes %>%
+  arrange(year) %>%
+  head(10) %>%
+  select(tailnum)
+```
+
+    # A tibble: 10 × 1
+       tailnum
+       <chr>  
+     1 N381AA 
+     2 N201AA 
+     3 N567AA 
+     4 N378AA 
+     5 N575AA 
+     6 N14629 
+     7 N615AA 
+     8 N425AA 
+     9 N383AA 
+    10 N364AA 
+
 ### 10. Какая средняя температура воздуха была в сентябре в аэропорту John F Kennedy Intl (в градусах Цельсия).
+
+``` r
+faa_jfk <- airports %>%
+  filter(name == "John F Kennedy Intl") %>%
+  select(faa)
+
+weather %>%
+  filter(origin == as.character(faa_jfk) & month == 9) %>%
+  summarize(mean_temp = mean(temp, na.rm = TRUE))
+```
+
+    # A tibble: 1 × 1
+      mean_temp
+          <dbl>
+    1      66.9
 
 ### 11. Самолеты какой авиакомпании совершили больше всего вылетов в июне?
 
+``` r
+flights %>%
+  filter(month == 6) %>%
+  group_by(carrier) %>%
+  summarize(total_flights = n()) %>%
+  arrange(desc(total_flights)) %>%
+  head(1)
+```
+
+    # A tibble: 1 × 2
+      carrier total_flights
+      <chr>           <int>
+    1 UA               4975
+
 ### 12. Самолеты какой авиакомпании задерживались чаще других в 2013 году?
+
+``` r
+flights %>%
+  filter(year == 2013) %>%
+  group_by(carrier) %>%
+  summarize(total_delays = sum(arr_delay > 0, na.rm = TRUE)) %>%
+  arrange(desc(total_delays)) %>%
+  head(1)
+```
+
+    # A tibble: 1 × 2
+      carrier total_delays
+      <chr>          <int>
+    1 EV             24484
 
 ## Оценка результатов
 
-Задания были успешно решены с помощью библиотеки dplyr и ….
+Задания из пакета nycflights13 были успешно решены с помощью библиотеки
+dplyr.
 
 ## Вывод
 
-Были изучены методы анализа данных при помощи….
+Были изучены методы анализа данных при помощи пакета dplyr.
