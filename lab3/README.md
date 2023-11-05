@@ -196,13 +196,15 @@ airlines %>%
 
 ### 6. Сколько рейсов принял аэропорт John F Kennedy Intl в мае?
 
+as.character(df) - перевод в строки
+
 ``` r
-faa_jfk <- airports %>%
+df_id_john <- airports %>%
   filter(name == "John F Kennedy Intl") %>%
   select(faa)
 
 flights %>%
-  filter(month == 5 & dest == as.character(faa_jfk)) %>%
+  filter(month == 5 & dest == as.character(df_id_john)) %>%
   nrow()
 ```
 
@@ -258,12 +260,12 @@ planes %>%
 ### 10. Какая средняя температура воздуха была в сентябре в аэропорту John F Kennedy Intl (в градусах Цельсия).
 
 ``` r
-faa_jfk <- airports %>%
+df_id_john <- airports %>%
   filter(name == "John F Kennedy Intl") %>%
   select(faa)
 
 weather %>%
-  filter(origin == as.character(faa_jfk) & month == 9) %>%
+  filter(origin == as.character(df_id_john) & month == 9) %>%
   summarize(mean_temp = mean(temp, na.rm = TRUE))
 ```
 
@@ -273,6 +275,8 @@ weather %>%
     1      66.9
 
 ### 11. Самолеты какой авиакомпании совершили больше всего вылетов в июне?
+
+n() нужно для подсчета наблюдений по группам
 
 ``` r
 flights %>%
