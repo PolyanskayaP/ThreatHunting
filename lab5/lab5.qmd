@@ -40,6 +40,14 @@ all_data <- read.csv('C:/ThreatHunting/lab5/mir.csv-01.csv')
 head(all_data,180)
 ```
 
+```{r}
+data_1 <- read.csv(file='C:/ThreatHunting/lab5/mir.csv-01.csv',nrows=167)
+```
+```{r}
+data_1
+```
+
+
 
 ### 2. Привести датасеты в вид “аккуратных данных”, преобразовать типы столбцов в соответствии с типом данных
 ```{r}
