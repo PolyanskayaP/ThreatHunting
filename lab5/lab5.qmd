@@ -44,14 +44,14 @@ head(all_data,180)
 data_1 <- read.csv(file='C:/ThreatHunting/lab5/mir.csv-01.csv',nrows=167)
 ```
 ```{r}
-data_1
+head(data_1)
 ```
 
 ```{r}
 data_2 <- read.csv(file='C:/ThreatHunting/lab5/mir.csv-01.csv',skip=169)
 ```
 ```{r}
-data_2
+head(data_2)
 ```
 
 ```{r}
