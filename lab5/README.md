@@ -827,6 +827,15 @@ head(data_2)
 
 ### 2. Привести датасеты в вид “аккуратных данных”, преобразовать типы столбцов в соответствии с типом данных
 
+``` r
+#data_1$First.time.seen <- as.Date(data_1$First.time.seen, format=" %Y-%m-%d %h:%m:%s")
+#data_2$First.time.seen <- as.Date(data_2$First.time.seen, format=" %Y-%m-%d ")
+#data_1$Last.time.seen <- as.Date(data_1$Last.time.seen, format=" %Y-%m-%d ")
+#data_2$Last.time.seen <- as.Date(data_2$Last.time.seen, format=" %Y-%m-%d ")
+#data_1[,c('First.time.seen', 'Last.time.seen')] = lapply(data_1[,c('First.time.seen', 'Last.time.seen')],
+# function(x) as.Date(x, format=" %Y-%m-%d "))
+```
+
 ### 3. Просмотрите общую структуру данных с помощью функции glimpse()
 
 data_1 = анонсы беспроводных точек доступа
@@ -1012,9 +1021,110 @@ data_1 %>%
 
 ### 2. Определить производителя для каждого обнаруженного устройства
 
+через nmap…
+
 ### 3. Выявить устройства, использующие последнюю версию протокола шифрования WPA3, и названия точек доступа, реализованных на этих устройствах
 
+``` r
+WPA3_df <- data_1 %>%
+  filter(Privacy == ' WPA3') 
+
+WPA3_df['ESSID']
+```
+
+    [1] ESSID
+    <0 строк> (или 'row.names' нулевой длины)
+
+Устройств, использующих WPA3, найдено не было
+
+Устройства, использующие WPA2:
+
+``` r
+WPA3_df <- data_1 %>%
+  filter(Privacy == ' WPA2') 
+
+WPA3_df['ESSID']
+```
+
+                              ESSID
+    1                  C322U13 3965
+    2                          Cnet
+    3                            KC
+    4                POCO X5 Pro 5G
+    5                              
+    6                  C322U21 0566
+    7                 AndroidAP177B
+    8      EBFCD57F-EE81fI_DL_1AO2T
+    9                  C322U06 9080
+    10                   Galaxy A71
+    11                             
+    12     EBFCD593-EE81fI_DMJ1AOI4
+    13     EBFCD597-EE81fI_DMN1AOe1
+    14                     Vladimir
+    15                         GIVC
+    16                             
+    17                          IKB
+    18                             
+    19                             
+    20                             
+    21                         GIVC
+    22                         GIVC
+    23            Mura's Galaxy A52
+    24                             
+    25                          IKB
+    26                   OnePlus 6T
+    27        Long Huong Galaxy M12
+    28         DESKTOP-KITJO8R 5262
+    29                          IKB
+    30                         GIVC
+    31               Инет от Путина
+    32                          IKB
+    33             Redmi Note 8 Pro
+    34                tementy-phone
+    35               MGTS_GPON_B563
+    36              Gnezdo_lounge 2
+    37  DIRECT-a8-HP M227f LaserJet
+    38                  quiksmobile
+    39                    realme 10
+    40                         витя
+    41                        Саня 
+    42     EBFCD5C1-EE81fI_DN11AOcY
+    43                     vivo Y21
+    44              iPhone (Uliana)
+    45                     Mi Phone
+    46      DIRECT-08-HP M428fdw LJ
+    47                 Айфон (Oleg)
+    48                       Amuler
+    49                 DIRECT-A6-HP
+    50                 Redmi 9C NFC
+    51                         Damy
+    52            iPhone (Искандер)
+    53                    IgorKotya
+    54                 C239U52 6706
+    55          Михаил's Galaxy M32
+    56     EBFCD6C2-EE81fI_DR21AOa0
+    57                          IKB
+    58                     Redmi 12
+    59                 C239U51 0701
+    60                 C239U53 6056
+    61     EBFCD615-EE81fI_DOL1AO8w
+    62              Galaxy A30s5208
+    63                         GIVC
+    64                     HONOR 30
+    65                             
+    66                      Redmi 9
+    67         DESKTOP-Q7R0KRV 2433
+    68                     POCO C40
+    69             Redmi Note 8 Pro
+    70            iPhone (Искандер)
+    71           GGWPRedmi Note 10S
+    72               Galaxy M012063
+
 ### 4. Отсортировать точки доступа по интервалу времени, в течение которого они находились на связи, по убыванию.
+
+``` r
+#d1_razn = difftime((data_1['Last.time.seen']) - (data_1['First.time.seen']))
+```
 
 ### 5. Обнаружить топ-10 самых быстрых точек доступа.
 

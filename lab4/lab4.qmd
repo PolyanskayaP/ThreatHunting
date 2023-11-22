@@ -68,7 +68,7 @@ head_df
 #### 3. Преобразуйте данные в столбцах в нужный формат
 ```{r}
 field<-head_df[,1]
-names(df)<-field
+names(df)<-field 
 
 df %>% 
   glimpse()
