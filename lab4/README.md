@@ -63,353 +63,99 @@ library(tidyverse)
     ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
 
 ``` r
-library(readr)
+library(dplyr)
 ```
 
+#### 1. Импортируйте данные DNS
+
 ``` r
-head_df <- read.csv('C:/ThreatHunting/lab4/header.csv')
+df <- read.table("dns.log", header = FALSE, sep = "\t", quote = "", encoding="UTF-8")
 ```
 
+#### 2. Добавьте пропущенные данные о структуре данных (назначении столбцов), 3. Преобразуйте данные в столбцах в нужный формат
+
 ``` r
-head_df
+colnames(df) <- read.csv("header_zeek.csv", header = FALSE, skip = 1)$V1 #новый header с названиями в соответствии с документацией zeek
 ```
 
-              Field       Type
-    1           ts       time 
-    2          uid      string
-    3           id      recor 
-    4                       d 
-    5        proto       proto
-    6     trans_id       count
-    7        query      string
-    8       qclass       count
-    9  qclass_name      string
-    10       qtype       count
-    11  qtype_name      string
-    12       rcode       count
-    13  rcode_name      string
-    14          QR       bool 
-    15          AA       bool 
-    16       TC RD  bool bool 
-    17          RA       bool 
-    18           Z       count
-    19     answers      vector
-    20        TTLs      vector
-    21    rejected       bool 
-                                                                                           Description
-    1                                                                    Timestamp of the DNS request 
-    2                                                                     Unique id of the connection 
-    3                                                ID record with orig/resp host/port. See conn.log 
-    4                                                                                                 
-    5                                                        Protocol of DNS transaction – TCP or UDP 
-    6                                       16 bit identifier assigned by DNS client; responses match 
-    7                                                                Domain name subject of the query 
-    8                                                                Value specifying the query class 
-    9                                           Descriptive name of the query class (e.g. C_INTERNET) 
-    10                                                                Value specifying the query type 
-    11                                                     Name of the query type (e.g. A, AAAA, PTR) 
-    12                                                        Response code value in the DNS response 
-    13                                 Descriptive name of the response code (e.g. NOERROR, NXDOMAIN) 
-    14                                        Was this a query or a response? T = response, F = query 
-    15                                    Authoritative Answer. T = server is authoritative for query 
-    16 Truncation. T = message was truncated Recursion Desired. T = request recursive lookup of query 
-    17                                     Recursion Available. T = server supports recursive queries 
-    18                                      Reserved field, should be zero in all queries & responses 
-    19                                           List of resource descriptions in answer to the query 
-    20                                                               Caching intervals of the answers 
-    21                                               Whether the DNS query was rejected by the server 
+#### 4. Просмотрите общую структуру данных с помощью функции glimpse()
 
 ``` r
-log <- read_log("C:/ThreatHunting/lab4/dns.log")
-```
-
-
-    ── Column specification ────────────────────────────────────────────────────────
-    cols(
-      X1 = col_character()
-    )
-
-    Warning: 382 parsing failures.
-     row col  expected    actual                            file
-    2384  -- 1 columns 4 columns 'C:/ThreatHunting/lab4/dns.log'
-    4209  -- 1 columns 3 columns 'C:/ThreatHunting/lab4/dns.log'
-    4211  -- 1 columns 3 columns 'C:/ThreatHunting/lab4/dns.log'
-    4212  -- 1 columns 3 columns 'C:/ThreatHunting/lab4/dns.log'
-    5232  -- 1 columns 3 columns 'C:/ThreatHunting/lab4/dns.log'
-    .... ... ......... ......... ...............................
-    See problems(...) for more details.
-
-``` r
-head(log, 10)
-```
-
-    # A tibble: 10 × 1
-       X1                                                                           
-       <chr>                                                                        
-     1 "1331901005.510000\tCWGtK431H9XuaTN4fi\t192.168.202.100\t45658\t192.168.27.2…
-     2 "1331901015.070000\tC36a282Jljz7BsbGH\t192.168.202.76\t137\t192.168.202.255\…
-     3 "1331901015.820000\tC36a282Jljz7BsbGH\t192.168.202.76\t137\t192.168.202.255\…
-     4 "1331901016.570000\tC36a282Jljz7BsbGH\t192.168.202.76\t137\t192.168.202.255\…
-     5 "1331901005.860000\tC36a282Jljz7BsbGH\t192.168.202.76\t137\t192.168.202.255\…
-     6 "1331901006.610000\tC36a282Jljz7BsbGH\t192.168.202.76\t137\t192.168.202.255\…
-     7 "1331901007.360000\tC36a282Jljz7BsbGH\t192.168.202.76\t137\t192.168.202.255\…
-     8 "1331901006.370000\tClEZCt3GLkJdtGGmAa\t192.168.202.89\t137\t192.168.202.255…
-     9 "1331901007.120000\tClEZCt3GLkJdtGGmAa\t192.168.202.89\t137\t192.168.202.255…
-    10 "1331901007.870000\tClEZCt3GLkJdtGGmAa\t192.168.202.89\t137\t192.168.202.255…
-
-``` r
-df <- read.csv("dns.log", header = FALSE,sep = "\t",encoding = "UTF-8")
-```
-
-``` r
-head(df, 10)
-```
-
-               V1                 V2              V3    V4              V5  V6  V7
-    1  1331901006 CWGtK431H9XuaTN4fi 192.168.202.100 45658  192.168.27.203 137 udp
-    2  1331901015  C36a282Jljz7BsbGH  192.168.202.76   137 192.168.202.255 137 udp
-    3  1331901016  C36a282Jljz7BsbGH  192.168.202.76   137 192.168.202.255 137 udp
-    4  1331901017  C36a282Jljz7BsbGH  192.168.202.76   137 192.168.202.255 137 udp
-    5  1331901006  C36a282Jljz7BsbGH  192.168.202.76   137 192.168.202.255 137 udp
-    6  1331901007  C36a282Jljz7BsbGH  192.168.202.76   137 192.168.202.255 137 udp
-    7  1331901007  C36a282Jljz7BsbGH  192.168.202.76   137 192.168.202.255 137 udp
-    8  1331901006 ClEZCt3GLkJdtGGmAa  192.168.202.89   137 192.168.202.255 137 udp
-    9  1331901007 ClEZCt3GLkJdtGGmAa  192.168.202.89   137 192.168.202.255 137 udp
-    10 1331901008 ClEZCt3GLkJdtGGmAa  192.168.202.89   137 192.168.202.255 137 udp
-          V8
-    1  33008
-    2  57402
-    3  57402
-    4  57402
-    5  57398
-    6  57398
-    7  57398
-    8  62187
-    9  62187
-    10 62187
-                                                                            V9 V10
-    1  *\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00   1
-    2                                                                 HPE8AA67   1
-    3                                                                 HPE8AA67   1
-    4                                                                 HPE8AA67   1
-    5                                                                     WPAD   1
-    6                                                                     WPAD   1
-    7                                                                     WPAD   1
-    8                                                                   EWREP1   1
-    9                                                                   EWREP1   1
-    10                                                                  EWREP1   1
-              V11 V12 V13 V14     V15   V16   V17   V18   V19 V20 V21 V22   V23
-    1  C_INTERNET  33 SRV   0 NOERROR FALSE FALSE FALSE FALSE   1   -   - FALSE
-    2  C_INTERNET  32  NB   -       - FALSE FALSE  TRUE FALSE   1   -   - FALSE
-    3  C_INTERNET  32  NB   -       - FALSE FALSE  TRUE FALSE   1   -   - FALSE
-    4  C_INTERNET  32  NB   -       - FALSE FALSE  TRUE FALSE   1   -   - FALSE
-    5  C_INTERNET  32  NB   -       - FALSE FALSE  TRUE FALSE   1   -   - FALSE
-    6  C_INTERNET  32  NB   -       - FALSE FALSE  TRUE FALSE   1   -   - FALSE
-    7  C_INTERNET  32  NB   -       - FALSE FALSE  TRUE FALSE   1   -   - FALSE
-    8  C_INTERNET  32  NB   -       - FALSE FALSE  TRUE FALSE   1   -   - FALSE
-    9  C_INTERNET  32  NB   -       - FALSE FALSE  TRUE FALSE   1   -   - FALSE
-    10 C_INTERNET  32  NB   -       - FALSE FALSE  TRUE FALSE   1   -   - FALSE
-
-#### 2. Добавьте пропущенные данные о структуре данных (назначении столбцов)
-
-``` r
-head_df[4, "Field"] <- "dns_proto"
-```
-
-``` r
-head_df
-```
-
-              Field       Type
-    1           ts       time 
-    2          uid      string
-    3           id      recor 
-    4     dns_proto         d 
-    5        proto       proto
-    6     trans_id       count
-    7        query      string
-    8       qclass       count
-    9  qclass_name      string
-    10       qtype       count
-    11  qtype_name      string
-    12       rcode       count
-    13  rcode_name      string
-    14          QR       bool 
-    15          AA       bool 
-    16       TC RD  bool bool 
-    17          RA       bool 
-    18           Z       count
-    19     answers      vector
-    20        TTLs      vector
-    21    rejected       bool 
-                                                                                           Description
-    1                                                                    Timestamp of the DNS request 
-    2                                                                     Unique id of the connection 
-    3                                                ID record with orig/resp host/port. See conn.log 
-    4                                                                                                 
-    5                                                        Protocol of DNS transaction – TCP or UDP 
-    6                                       16 bit identifier assigned by DNS client; responses match 
-    7                                                                Domain name subject of the query 
-    8                                                                Value specifying the query class 
-    9                                           Descriptive name of the query class (e.g. C_INTERNET) 
-    10                                                                Value specifying the query type 
-    11                                                     Name of the query type (e.g. A, AAAA, PTR) 
-    12                                                        Response code value in the DNS response 
-    13                                 Descriptive name of the response code (e.g. NOERROR, NXDOMAIN) 
-    14                                        Was this a query or a response? T = response, F = query 
-    15                                    Authoritative Answer. T = server is authoritative for query 
-    16 Truncation. T = message was truncated Recursion Desired. T = request recursive lookup of query 
-    17                                     Recursion Available. T = server supports recursive queries 
-    18                                      Reserved field, should be zero in all queries & responses 
-    19                                           List of resource descriptions in answer to the query 
-    20                                                               Caching intervals of the answers 
-    21                                               Whether the DNS query was rejected by the server 
-
-#### 3. Преобразуйте данные в столбцах в нужный формат
-
-``` r
-field<-head_df[,1]
-names(df)<-field 
-
-df %>% 
+df %>%
   glimpse()
 ```
 
     Rows: 427,935
     Columns: 23
-    $ `ts `          <dbl> 1331901006, 1331901015, 1331901016, 1331901017, 1331901…
-    $ `uid `         <chr> "CWGtK431H9XuaTN4fi", "C36a282Jljz7BsbGH", "C36a282Jljz…
-    $ `id `          <chr> "192.168.202.100", "192.168.202.76", "192.168.202.76", …
-    $ dns_proto      <int> 45658, 137, 137, 137, 137, 137, 137, 137, 137, 137, 137…
-    $ `proto `       <chr> "192.168.27.203", "192.168.202.255", "192.168.202.255",…
-    $ `trans_id `    <int> 137, 137, 137, 137, 137, 137, 137, 137, 137, 137, 137, …
-    $ `query `       <chr> "udp", "udp", "udp", "udp", "udp", "udp", "udp", "udp",…
-    $ `qclass `      <int> 33008, 57402, 57402, 57402, 57398, 57398, 57398, 62187,…
-    $ `qclass_name ` <chr> "*\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x…
-    $ `qtype `       <chr> "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", …
-    $ `qtype_name `  <chr> "C_INTERNET", "C_INTERNET", "C_INTERNET", "C_INTERNET",…
-    $ `rcode `       <chr> "33", "32", "32", "32", "32", "32", "32", "32", "32", "…
-    $ `rcode_name `  <chr> "SRV", "NB", "NB", "NB", "NB", "NB", "NB", "NB", "NB", …
-    $ `QR `          <chr> "0", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", …
-    $ `AA `          <chr> "NOERROR", "-", "-", "-", "-", "-", "-", "-", "-", "-",…
-    $ `TC RD `       <lgl> FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,…
-    $ `RA `          <lgl> FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,…
-    $ `Z `           <lgl> FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, …
-    $ `answers `     <lgl> FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,…
-    $ `TTLs `        <int> 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1…
-    $ `rejected `    <chr> "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", …
-    $ NA             <chr> "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", …
-    $ NA             <lgl> FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,…
+    $ ts          <dbl> 1331901006, 1331901015, 1331901016, 1331901017, 1331901006…
+    $ uid         <chr> "CWGtK431H9XuaTN4fi", "C36a282Jljz7BsbGH", "C36a282Jljz7Bs…
+    $ id.orig_h   <chr> "192.168.202.100", "192.168.202.76", "192.168.202.76", "19…
+    $ id.orig_p   <int> 45658, 137, 137, 137, 137, 137, 137, 137, 137, 137, 137, 1…
+    $ id.resp_h   <chr> "192.168.27.203", "192.168.202.255", "192.168.202.255", "1…
+    $ id_resp_p   <int> 137, 137, 137, 137, 137, 137, 137, 137, 137, 137, 137, 137…
+    $ proto       <chr> "udp", "udp", "udp", "udp", "udp", "udp", "udp", "udp", "u…
+    $ trans_id    <int> 33008, 57402, 57402, 57402, 57398, 57398, 57398, 62187, 62…
+    $ query       <chr> "*\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\…
+    $ qclass      <chr> "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1"…
+    $ qclass_name <chr> "C_INTERNET", "C_INTERNET", "C_INTERNET", "C_INTERNET", "C…
+    $ qtype       <chr> "33", "32", "32", "32", "32", "32", "32", "32", "32", "32"…
+    $ qtype_name  <chr> "SRV", "NB", "NB", "NB", "NB", "NB", "NB", "NB", "NB", "NB…
+    $ rcode       <chr> "0", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-"…
+    $ rcode_name  <chr> "NOERROR", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-…
+    $ AA          <lgl> FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FA…
+    $ TC          <lgl> FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FA…
+    $ RD          <lgl> FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRU…
+    $ RA          <lgl> FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FA…
+    $ Z           <int> 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0…
+    $ answers     <chr> "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-"…
+    $ TTLs        <chr> "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-"…
+    $ rejected    <lgl> FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FA…
 
 ``` r
-head(df, 10)
+head(df)
 ```
 
-              ts                uid              id  dns_proto          proto 
-    1  1331901006 CWGtK431H9XuaTN4fi 192.168.202.100     45658  192.168.27.203
-    2  1331901015  C36a282Jljz7BsbGH  192.168.202.76       137 192.168.202.255
-    3  1331901016  C36a282Jljz7BsbGH  192.168.202.76       137 192.168.202.255
-    4  1331901017  C36a282Jljz7BsbGH  192.168.202.76       137 192.168.202.255
-    5  1331901006  C36a282Jljz7BsbGH  192.168.202.76       137 192.168.202.255
-    6  1331901007  C36a282Jljz7BsbGH  192.168.202.76       137 192.168.202.255
-    7  1331901007  C36a282Jljz7BsbGH  192.168.202.76       137 192.168.202.255
-    8  1331901006 ClEZCt3GLkJdtGGmAa  192.168.202.89       137 192.168.202.255
-    9  1331901007 ClEZCt3GLkJdtGGmAa  192.168.202.89       137 192.168.202.255
-    10 1331901008 ClEZCt3GLkJdtGGmAa  192.168.202.89       137 192.168.202.255
-       trans_id  query  qclass 
-    1        137    udp   33008
-    2        137    udp   57402
-    3        137    udp   57402
-    4        137    udp   57402
-    5        137    udp   57398
-    6        137    udp   57398
-    7        137    udp   57398
-    8        137    udp   62187
-    9        137    udp   62187
-    10       137    udp   62187
-                                                                  qclass_name 
-    1  *\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00
-    2                                                                 HPE8AA67
-    3                                                                 HPE8AA67
-    4                                                                 HPE8AA67
-    5                                                                     WPAD
-    6                                                                     WPAD
-    7                                                                     WPAD
-    8                                                                   EWREP1
-    9                                                                   EWREP1
-    10                                                                  EWREP1
-       qtype  qtype_name  rcode  rcode_name  QR      AA  TC RD    RA     Z 
-    1       1  C_INTERNET     33         SRV   0 NOERROR  FALSE FALSE FALSE
-    2       1  C_INTERNET     32          NB   -       -  FALSE FALSE  TRUE
-    3       1  C_INTERNET     32          NB   -       -  FALSE FALSE  TRUE
-    4       1  C_INTERNET     32          NB   -       -  FALSE FALSE  TRUE
-    5       1  C_INTERNET     32          NB   -       -  FALSE FALSE  TRUE
-    6       1  C_INTERNET     32          NB   -       -  FALSE FALSE  TRUE
-    7       1  C_INTERNET     32          NB   -       -  FALSE FALSE  TRUE
-    8       1  C_INTERNET     32          NB   -       -  FALSE FALSE  TRUE
-    9       1  C_INTERNET     32          NB   -       -  FALSE FALSE  TRUE
-    10      1  C_INTERNET     32          NB   -       -  FALSE FALSE  TRUE
-       answers  TTLs  rejected  NA    NA
-    1     FALSE     1         -  - FALSE
-    2     FALSE     1         -  - FALSE
-    3     FALSE     1         -  - FALSE
-    4     FALSE     1         -  - FALSE
-    5     FALSE     1         -  - FALSE
-    6     FALSE     1         -  - FALSE
-    7     FALSE     1         -  - FALSE
-    8     FALSE     1         -  - FALSE
-    9     FALSE     1         -  - FALSE
-    10    FALSE     1         -  - FALSE
-
-#### 4. Просмотрите общую структуру данных с помощью функции glimpse()
-
-``` r
-glimpse(head_df)
-```
-
-    Rows: 21
-    Columns: 3
-    $ Field       <chr> "ts ", "uid ", "id ", "dns_proto", "proto ", "trans_id ", …
-    $ Type        <chr> "time ", "string", "recor ", "d ", "proto", "count", "stri…
-    $ Description <chr> "Timestamp of the DNS request ", "Unique id of the connect…
-
-``` r
-glimpse(df)
-```
-
-    Rows: 427,935
-    Columns: 23
-    $ `ts `          <dbl> 1331901006, 1331901015, 1331901016, 1331901017, 1331901…
-    $ `uid `         <chr> "CWGtK431H9XuaTN4fi", "C36a282Jljz7BsbGH", "C36a282Jljz…
-    $ `id `          <chr> "192.168.202.100", "192.168.202.76", "192.168.202.76", …
-    $ dns_proto      <int> 45658, 137, 137, 137, 137, 137, 137, 137, 137, 137, 137…
-    $ `proto `       <chr> "192.168.27.203", "192.168.202.255", "192.168.202.255",…
-    $ `trans_id `    <int> 137, 137, 137, 137, 137, 137, 137, 137, 137, 137, 137, …
-    $ `query `       <chr> "udp", "udp", "udp", "udp", "udp", "udp", "udp", "udp",…
-    $ `qclass `      <int> 33008, 57402, 57402, 57402, 57398, 57398, 57398, 62187,…
-    $ `qclass_name ` <chr> "*\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x…
-    $ `qtype `       <chr> "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", …
-    $ `qtype_name `  <chr> "C_INTERNET", "C_INTERNET", "C_INTERNET", "C_INTERNET",…
-    $ `rcode `       <chr> "33", "32", "32", "32", "32", "32", "32", "32", "32", "…
-    $ `rcode_name `  <chr> "SRV", "NB", "NB", "NB", "NB", "NB", "NB", "NB", "NB", …
-    $ `QR `          <chr> "0", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", …
-    $ `AA `          <chr> "NOERROR", "-", "-", "-", "-", "-", "-", "-", "-", "-",…
-    $ `TC RD `       <lgl> FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,…
-    $ `RA `          <lgl> FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,…
-    $ `Z `           <lgl> FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, …
-    $ `answers `     <lgl> FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,…
-    $ `TTLs `        <int> 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1…
-    $ `rejected `    <chr> "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", …
-    $ NA             <chr> "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", …
-    $ NA             <lgl> FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,…
-
-### Анализ
+              ts                uid       id.orig_h id.orig_p       id.resp_h
+    1 1331901006 CWGtK431H9XuaTN4fi 192.168.202.100     45658  192.168.27.203
+    2 1331901015  C36a282Jljz7BsbGH  192.168.202.76       137 192.168.202.255
+    3 1331901016  C36a282Jljz7BsbGH  192.168.202.76       137 192.168.202.255
+    4 1331901017  C36a282Jljz7BsbGH  192.168.202.76       137 192.168.202.255
+    5 1331901006  C36a282Jljz7BsbGH  192.168.202.76       137 192.168.202.255
+    6 1331901007  C36a282Jljz7BsbGH  192.168.202.76       137 192.168.202.255
+      id_resp_p proto trans_id
+    1       137   udp    33008
+    2       137   udp    57402
+    3       137   udp    57402
+    4       137   udp    57402
+    5       137   udp    57398
+    6       137   udp    57398
+                                                                        query
+    1 *\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00
+    2                                                                HPE8AA67
+    3                                                                HPE8AA67
+    4                                                                HPE8AA67
+    5                                                                    WPAD
+    6                                                                    WPAD
+      qclass qclass_name qtype qtype_name rcode rcode_name    AA    TC    RD    RA
+    1      1  C_INTERNET    33        SRV     0    NOERROR FALSE FALSE FALSE FALSE
+    2      1  C_INTERNET    32         NB     -          - FALSE FALSE  TRUE FALSE
+    3      1  C_INTERNET    32         NB     -          - FALSE FALSE  TRUE FALSE
+    4      1  C_INTERNET    32         NB     -          - FALSE FALSE  TRUE FALSE
+    5      1  C_INTERNET    32         NB     -          - FALSE FALSE  TRUE FALSE
+    6      1  C_INTERNET    32         NB     -          - FALSE FALSE  TRUE FALSE
+      Z answers TTLs rejected
+    1 1       -    -    FALSE
+    2 1       -    -    FALSE
+    3 1       -    -    FALSE
+    4 1       -    -    FALSE
+    5 1       -    -    FALSE
+    6 1       -    -    FALSE
 
 #### 4. Сколько участников информационного обмена в сети Доброй Организации?
 
 ``` r
-unique_id <- unique(df$id)
-unique_proto <- unique(df$proto)
+unique_id <- unique(df$`id.orig_h`)
+unique_proto <- unique(df$`id.resp_h`)
 unique_people <- union(unique_id , unique_proto)
 unique_people %>% length()
 ```
@@ -418,17 +164,138 @@ unique_people %>% length()
 
 #### 5. Какое соотношение участников обмена внутри сети и участников обращений к внешним ресурсам?
 
+``` r
+hostlar <- c(unique_id, unique_proto)
+internal_ip_pattern <- c("192.168.", "10.", "100.([6-9]|1[0-1][0-9]|12[0-7]).", "172.((1[6-9])|(2[0-9])|(3[0-1])).")
+internal_ips <- hostlar[grep(paste(internal_ip_pattern, collapse = "|"), hostlar)]
+internal_ips_cnt <- sum(hostlar %in% internal_ips)
+external_ips_cnt <- length(hostlar) - internal_ips_cnt
+stn_in_ex <- internal_ips_cnt / external_ips_cnt
+stn_in_ex
+```
+
+    [1] 16.24419
+
 #### 6. Найдите топ-10 участников сети, проявляющих наибольшую сетевую активность.
+
+``` r
+top_hostlar <- df %>%
+  group_by(id.orig_h) %>%
+  summarise(request_count = n()) %>%
+  arrange(desc(request_count)) %>%
+  top_n(10, request_count)
+top_hostlar
+```
+
+    # A tibble: 10 × 2
+       id.orig_h       request_count
+       <chr>                   <int>
+     1 10.10.117.210           75943
+     2 192.168.202.93          26522
+     3 192.168.202.103         18121
+     4 192.168.202.76          16978
+     5 192.168.202.97          16176
+     6 192.168.202.141         14967
+     7 10.10.117.209           14222
+     8 192.168.202.110         13372
+     9 192.168.203.63          12148
+    10 192.168.202.106         10784
 
 #### 7. Найдите топ-10 доменов, к которым обращаются пользователи сети и соответственное количество обращений
 
+``` r
+top_domainler <- df %>%
+  group_by(query) %>%
+  summarise(request_count = n()) %>%
+  arrange(desc(request_count)) %>%
+  top_n(10, request_count)
+top_domainler
+```
+
+    # A tibble: 10 × 2
+       query                                                           request_count
+       <chr>                                                                   <int>
+     1 "teredo.ipv6.microsoft.com"                                             39273
+     2 "tools.google.com"                                                      14057
+     3 "www.apple.com"                                                         13390
+     4 "time.apple.com"                                                        13109
+     5 "safebrowsing.clients.google.com"                                       11658
+     6 "*\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00…         10401
+     7 "WPAD"                                                                   9134
+     8 "44.206.168.192.in-addr.arpa"                                            7248
+     9 "HPE8AA67"                                                               6929
+    10 "ISATAP"                                                                 6569
+
 #### 8. Опеределите базовые статистические характеристики (функция summary() ) интервала времени между последовательным обращениями к топ-10 доменам.
 
+``` r
+t_d_filter <- df %>% filter(tolower(query) %in% top_domainler$query) %>% arrange(ts)
+t_i <- diff(t_d_filter$ts)
+summary(t_i)
+```
+
+        Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+        0.00     0.00     0.10     1.07     0.54 49677.59 
+
 #### 9. Часто вредоносное программное обеспечение использует DNS канал в качестве каналауправления, периодически отправляя запросы на подконтрольный злоумышленникам DNS сервер. По периодическим запросам на один и тот же домен можно выявить скрытый DNS канал. Есть ли такие IP адреса в исследуемом датасете?
+
+``` r
+ip_domain_counts <- df %>%
+  group_by(ip = `id.orig_h`, query) %>%
+  summarise(request_count = n()) %>%
+  filter(request_count > 1)
+```
+
+    `summarise()` has grouped output by 'ip'. You can override using the `.groups`
+    argument.
+
+``` r
+unique_ips_with_periodic_requests <- unique(ip_domain_counts$ip)
+
+unique_ips_with_periodic_requests %>% length()
+```
+
+    [1] 240
+
+``` r
+unique_ips_with_periodic_requests %>% head()
+```
+
+    [1] "10.10.10.10"     "10.10.117.209"   "10.10.117.210"   "128.244.37.196" 
+    [5] "169.254.109.123" "169.254.228.26" 
 
 ### Обогащение данных
 
 #### 10. Определите местоположение (страну, город) и организацию-провайдера для топ-10 доменов. Для этого можно использовать сторонние сервисы, например https://v4.ifconfig.co.
+
+``` r
+print(top_domainler$query)
+```
+
+     [1] "teredo.ipv6.microsoft.com"                                              
+     [2] "tools.google.com"                                                       
+     [3] "www.apple.com"                                                          
+     [4] "time.apple.com"                                                         
+     [5] "safebrowsing.clients.google.com"                                        
+     [6] "*\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00"
+     [7] "WPAD"                                                                   
+     [8] "44.206.168.192.in-addr.arpa"                                            
+     [9] "HPE8AA67"                                                               
+    [10] "ISATAP"                                                                 
+
+Местоположения были определены при помощи domaintools.site:
+
+HOSTNAME: Tools.google.com IP: 209.85.233.102 CONTINENT: North America
+COUNTRY: United States
+
+HOSTNAME: Apple.com IP: 17.253.144.10 CONTINENT: North America COUNTRY:
+United States
+
+HOSTNAME: Time.apple.com IP: 17.253.38.253 CONTINENT: Europe COUNTRY:
+Sweden
+
+HOSTNAME: Safebrowsing.clients.google.com IP: 142.250.150.138 CONTINENT:
+North America COUNTRY: United States
 
 ## Оценка результатов
 
@@ -437,4 +304,5 @@ readr.
 
 ## Вывод
 
-Были изучены возможности библиотек tidyverse, readr.
+Были изучены возможности библиотек tidyverse, readr, проанализированы
+данные сетевого трафика.

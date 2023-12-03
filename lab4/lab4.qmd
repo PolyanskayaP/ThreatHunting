@@ -35,102 +35,118 @@ install.packages("tidyverse")
 ```{r}
 library(tidyverse)
 ```
-```{r}
-library(readr)
-```
 
 ```{r}
-head_df <- read.csv('C:/ThreatHunting/lab4/header.csv')
-```
-```{r}
-head_df
-```
-```{r}
-log <- read_log("C:/ThreatHunting/lab4/dns.log")
-head(log, 10)
+library(dplyr)
 ```
 
+#### 1. Импортируйте данные DNS 
 ```{r}
-df <- read.csv("dns.log", header = FALSE,sep = "\t",encoding = "UTF-8")
-```
-```{r}
-head(df, 10)
+df <- read.table("dns.log", header = FALSE, sep = "\t", quote = "", encoding="UTF-8")
 ```
 
-#### 2. Добавьте пропущенные данные о структуре данных (назначении столбцов)
+#### 2. Добавьте пропущенные данные о структуре данных (назначении столбцов), 3. Преобразуйте данные в столбцах в нужный формат
 ```{r}
-head_df[4, "Field"] <- "dns_proto"
+colnames(df) <- read.csv("header_zeek.csv", header = FALSE, skip = 1)$V1 #новый header с названиями в соответствии с документацией zeek
 ```
-```{r}
-head_df
-```
-
-#### 3. Преобразуйте данные в столбцах в нужный формат
-```{r}
-field<-head_df[,1]
-names(df)<-field 
-
-df %>% 
-  glimpse()
-
-head(df, 10)
-```
-
 
 #### 4. Просмотрите общую структуру данных с помощью функции glimpse()
 ```{r}
-glimpse(head_df)
-```
-```{r}
-glimpse(df)
+df %>%
+  glimpse()
 ```
 
-### Анализ
+```{r}
+head(df)
+```
+
 
 #### 4. Сколько участников информационного обмена в сети Доброй Организации?
 ```{r}
-unique_id <- unique(df$id)
-unique_proto <- unique(df$proto)
+unique_id <- unique(df$`id.orig_h`)
+unique_proto <- unique(df$`id.resp_h`)
 unique_people <- union(unique_id , unique_proto)
 unique_people %>% length()
 ```
 
-
 #### 5. Какое соотношение участников обмена внутри сети и участников обращений к внешним ресурсам?
 ```{r}
-
+hostlar <- c(unique_id, unique_proto)
+internal_ip_pattern <- c("192.168.", "10.", "100.([6-9]|1[0-1][0-9]|12[0-7]).", "172.((1[6-9])|(2[0-9])|(3[0-1])).")
+internal_ips <- hostlar[grep(paste(internal_ip_pattern, collapse = "|"), hostlar)]
+internal_ips_cnt <- sum(hostlar %in% internal_ips)
+external_ips_cnt <- length(hostlar) - internal_ips_cnt
+stn_in_ex <- internal_ips_cnt / external_ips_cnt
+stn_in_ex
 ```
 
 #### 6. Найдите топ-10 участников сети, проявляющих наибольшую сетевую активность.
 ```{r}
-
+top_hostlar <- df %>%
+  group_by(id.orig_h) %>%
+  summarise(request_count = n()) %>%
+  arrange(desc(request_count)) %>%
+  top_n(10, request_count)
+top_hostlar
 ```
-
 
 #### 7. Найдите топ-10 доменов, к которым обращаются пользователи сети и соответственное количество обращений
 ```{r}
-
+top_domainler <- df %>%
+  group_by(query) %>%
+  summarise(request_count = n()) %>%
+  arrange(desc(request_count)) %>%
+  top_n(10, request_count)
+top_domainler
 ```
-
 
 #### 8. Опеределите базовые статистические характеристики (функция summary() ) интервала времени между последовательным обращениями к топ-10 доменам.
 ```{r}
-
+t_d_filter <- df %>% filter(tolower(query) %in% top_domainler$query) %>% arrange(ts)
+t_i <- diff(t_d_filter$ts)
+summary(t_i)
 ```
 
 #### 9. Часто вредоносное программное обеспечение использует DNS канал в качестве каналауправления, периодически отправляя запросы на подконтрольный злоумышленникам DNS сервер. По периодическим запросам на один и тот же домен можно выявить скрытый DNS канал. Есть ли такие IP адреса в исследуемом датасете?
 ```{r}
+ip_domain_counts <- df %>%
+  group_by(ip = `id.orig_h`, query) %>%
+  summarise(request_count = n()) %>%
+  filter(request_count > 1)
+unique_ips_with_periodic_requests <- unique(ip_domain_counts$ip)
 
+unique_ips_with_periodic_requests %>% length()
+unique_ips_with_periodic_requests %>% head()
 ```
 
 ### Обогащение данных
 
 #### 10. Определите местоположение (страну, город) и организацию-провайдера для топ-10 доменов. Для этого можно использовать сторонние сервисы, например https://v4.ifconfig.co.
 ```{r}
-
+print(top_domainler$query)
 ```
 
+Местоположения были определены при помощи domaintools.site: 
 
+HOSTNAME: Tools.google.com
+IP: 209.85.233.102
+CONTINENT: North America
+COUNTRY: United States
+
+HOSTNAME: Apple.com
+IP: 17.253.144.10
+CONTINENT: North America
+COUNTRY: United States
+
+HOSTNAME: Time.apple.com
+IP: 17.253.38.253
+CONTINENT: Europe
+COUNTRY: Sweden
+
+HOSTNAME: Safebrowsing.clients.google.com
+IP: 142.250.150.138
+CONTINENT: North America
+COUNTRY: United States
 
 ## Оценка результатов
 
@@ -138,4 +154,4 @@ unique_people %>% length()
 
 ## Вывод
 
-Были изучены возможности библиотек tidyverse, readr.
+Были изучены возможности библиотек tidyverse, readr, проанализированы данные сетевого трафика.
