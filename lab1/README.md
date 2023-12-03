@@ -1,10 +1,9 @@
 # lab1
 Полянская Полина Алексеевна
 
-Прохождение курса по R в RStudio через пакет swirl (R Programming: The
-basics of programming in R)
+# Прохождение курса по R в RStudio через пакет swirl (R Programming: The basics of programming in R)
 
-## Цель
+## Цель работы
 
 1.  Познакомится с синтаксисом языка программирования R
 
@@ -18,20 +17,24 @@ basics of programming in R)
 2.  RStudio
 3.  Пакет swirl
 
+## План
+
+1.  Установить библиотеку `swirl`
+2.  Запустить в консоли `swirl::swirl()`
+3.  Пройти 4 урока по языку программирования R
+
 ## Задание
 
 Пройти 4 курса по основам языка R.
 
-## Шаги
+## Ход выполнения работы
 
-### Установка swirl
-
-Нужно ввести
+Установка swirl Нужно ввести
 
     install.packages("swirl")   
     swirl::swirl()
 
-### 1: Basic Building Blocks
+### Задание 1: Basic Building Blocks
 
 ``` r
 5 + 7
@@ -150,7 +153,7 @@ my_div
 
     [1] 3.478505 3.181981 2.146460
 
-### 2: Workspace and Files
+### Задание 2: Workspace and Files
 
 Determine which directory your R session is using as its current working
 directory using getwd().
@@ -159,7 +162,7 @@ directory using getwd().
 getwd()
 ```
 
-    [1] "C:/!Полина/!7семестр/ИАТПУИБ/ThreatHunting/lab1"
+    [1] "C:/ThreatHunting/lab1"
 
 List all the objects in your local workspace using ls().
 
@@ -189,7 +192,7 @@ dir()
 ```
 
     [1] "lab1.qmd"       "lab1.rmarkdown" "mytest2.R"      "mytest3.R"     
-    [5] "README.md"      "testdir"        "testdir2"      
+    [5] "README.md"     
 
 ``` r
 ?list.files
@@ -221,8 +224,6 @@ called “testdir”.
 dir.create("testdir")
 ```
 
-    Warning in dir.create("testdir"): 'testdir' уже существует
-
 Use setwd(“testdir”) to set your working directory to “testdir”.
 
 ``` r
@@ -245,7 +246,7 @@ list.files()
 ```
 
     [1] "lab1.qmd"       "lab1.rmarkdown" "mytest.R"       "mytest2.R"     
-    [5] "mytest3.R"      "README.md"      "testdir"        "testdir2"      
+    [5] "mytest3.R"      "README.md"      "testdir"       
 
 Check to see if “mytest.R” exists in the working directory using the
 file.exists() function.
@@ -263,9 +264,9 @@ file.info("mytest.R")
 ```
 
              size isdir mode               mtime               ctime
-    mytest.R    0 FALSE  666 2023-10-19 14:21:23 2023-10-19 14:21:23
+    mytest.R    0 FALSE  666 2023-12-03 18:15:43 2023-12-03 18:15:43
                            atime exe
-    mytest.R 2023-10-19 14:21:23  no
+    mytest.R 2023-12-03 18:15:43  no
 
 Change the name of the file “mytest.R” to “mytest2.R” by using
 file.rename().
@@ -319,9 +320,6 @@ dir.create() and file.path().
 dir.create(file.path('testdir2', 'testdir3'), recursive = TRUE)
 ```
 
-    Warning in dir.create(file.path("testdir2", "testdir3"), recursive = TRUE):
-    'testdir2\testdir3' уже существует
-
 Go back to your original working directory using setwd(). (Recall that
 we created the variable old.dir with the full path for the orginal
 working directory at the start of these questions.)
@@ -330,7 +328,7 @@ working directory at the start of these questions.)
 setwd(old.dir)
 ```
 
-### 3: Sequences of Numbers
+### Задание 3: Sequences of Numbers
 
 The simplest way to create a sequence of numbers in R is by using the
 `:` operator. Type 1:20 to see how it works.
@@ -424,7 +422,7 @@ rep(c(0, 1, 2), each = 10)
 
      [1] 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 2 2 2
 
-### 4: Vectors
+### Задание 4: Vectors
 
 ``` r
 num_vect <- c(0.5, 55, -10, 6)
@@ -529,7 +527,7 @@ paste(LETTERS, 1:4, sep = "-")
     [13] "M-1" "N-2" "O-3" "P-4" "Q-1" "R-2" "S-3" "T-4" "U-1" "V-2" "W-3" "X-4"
     [25] "Y-1" "Z-2"
 
-## Оценка результата
+## Оценка результатов
 
 Были получены базовые знания синтаксиса языка программирования R.
 
