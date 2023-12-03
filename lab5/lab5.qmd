@@ -55,12 +55,10 @@ head(data_2)
 
 ### 2. Привести датасеты в вид “аккуратных данных”, преобразовать типы столбцов в соответствии с типом данных
 ```{r}
-#data_1$First.time.seen <- as.Date(data_1$First.time.seen, format=" %Y-%m-%d %h:%m:%s")
-#data_2$First.time.seen <- as.Date(data_2$First.time.seen, format=" %Y-%m-%d ")
-#data_1$Last.time.seen <- as.Date(data_1$Last.time.seen, format=" %Y-%m-%d ")
-#data_2$Last.time.seen <- as.Date(data_2$Last.time.seen, format=" %Y-%m-%d ")
-#data_1[,c('First.time.seen', 'Last.time.seen')] = lapply(data_1[,c('First.time.seen', 'Last.time.seen')],
-# function(x) as.Date(x, format=" %Y-%m-%d "))
+data_1$First.time.seen <- as.POSIXct(data_1$First.time.seen, format=" %Y-%m-%d %H:%M:%S", tz=" UTC ") 
+data_1$Last.time.seen <- as.POSIXct(data_1$Last.time.seen, format=" %Y-%m-%d %H:%M:%S", tz=" UTC ") 
+data_2$First.time.seen <- as.POSIXct(data_2$First.time.seen, format=" %Y-%m-%d %H:%M:%S", tz=" UTC ") 
+data_2$Last.time.seen <- as.POSIXct(data_2$Last.time.seen, format=" %Y-%m-%d %H:%M:%S", tz=" UTC ") 
 ```
 
 ### 3. Просмотрите общую структуру данных с помощью функции glimpse()
@@ -109,17 +107,47 @@ WPA3_df['ESSID']
 ```
 ### 4. Отсортировать точки доступа по интервалу времени, в течение которого они находились на связи, по убыванию.
 ```{r}
-#d1_razn = difftime((data_1['Last.time.seen']) - (data_1['First.time.seen']))
+ep1 = as.POSIXct(strptime(data_1$First.time.seen, format='%d-%m-%Y %H:%M'))
+ep2 = as.POSIXct(strptime(data_1$Last.time.seen, format='%d-%m-%Y %H:%M'))
+```
+```{r}
+#ep_r = difftime(ep2 - ep1)
+```
+
+
+```{r}
+#d1_razn = difftime((data_1$Last.time.seen) - (data_1$First.time.seen))
 ```
 
 ### 5. Обнаружить топ-10 самых быстрых точек доступа.
+```{r}
+speed_sort <- data_1[ order (-data_1$Speed), ]
+head(speed_sort, 10)
+```
+
 ### 6. Отсортировать точки доступа по частоте отправки запросов (beacons) в единицу времени по их убыванию.
+```{r}
+data_1[ order (-data_1$X..beacons), ]
+```
+
 
 ## Данные клиентов
 
 ### 1. Определить производителя для каждого обнаруженного устройства
+```{r}
+
+```
+
 ### 2. Обнаружить устройства, которые НЕ рандомизируют свой MAC адрес
+```{r}
+
+```
+
 ### 3. Кластеризовать запросы от устройств к точкам доступа по их именам. Определить время появления устройства в зоне радиовидимости и время выхода его из нее.
+```{r}
+
+```
+
 ### 4. Оценить стабильность уровня сигнала внури кластера во времени. Выявить наиболее стабильный кластер
 
 
