@@ -8,7 +8,7 @@ editor_options:
   chunk_output_type: inline
 ---
 
-# Прохождение курса по R в RStudio через пакет swirl \n (R Programming: The basics of programming in R)
+Прохождение курса по R в RStudio через пакет swirl (R Programming: The basics of programming in R)
 
 ## Цель работы
 

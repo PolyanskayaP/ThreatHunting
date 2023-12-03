@@ -1,7 +1,8 @@
 # lab1
 Полянская Полина Алексеевна
 
-# Прохождение курса по R в RStudio через пакет swirl (R Programming: The basics of programming in R)
+Прохождение курса по R в RStudio через пакет swirl (R Programming: The
+basics of programming in R)
 
 ## Цель работы
 
@@ -192,7 +193,7 @@ dir()
 ```
 
     [1] "lab1.qmd"       "lab1.rmarkdown" "mytest2.R"      "mytest3.R"     
-    [5] "README.md"     
+    [5] "README.md"      "testdir"        "testdir2"      
 
 ``` r
 ?list.files
@@ -224,6 +225,8 @@ called “testdir”.
 dir.create("testdir")
 ```
 
+    Warning in dir.create("testdir"): 'testdir' уже существует
+
 Use setwd(“testdir”) to set your working directory to “testdir”.
 
 ``` r
@@ -246,7 +249,7 @@ list.files()
 ```
 
     [1] "lab1.qmd"       "lab1.rmarkdown" "mytest.R"       "mytest2.R"     
-    [5] "mytest3.R"      "README.md"      "testdir"       
+    [5] "mytest3.R"      "README.md"      "testdir"        "testdir2"      
 
 Check to see if “mytest.R” exists in the working directory using the
 file.exists() function.
@@ -264,9 +267,9 @@ file.info("mytest.R")
 ```
 
              size isdir mode               mtime               ctime
-    mytest.R    0 FALSE  666 2023-12-03 18:15:43 2023-12-03 18:15:43
+    mytest.R    0 FALSE  666 2023-12-03 18:17:50 2023-12-03 18:17:50
                            atime exe
-    mytest.R 2023-12-03 18:15:43  no
+    mytest.R 2023-12-03 18:17:50  no
 
 Change the name of the file “mytest.R” to “mytest2.R” by using
 file.rename().
@@ -319,6 +322,9 @@ dir.create() and file.path().
 ``` r
 dir.create(file.path('testdir2', 'testdir3'), recursive = TRUE)
 ```
+
+    Warning in dir.create(file.path("testdir2", "testdir3"), recursive = TRUE):
+    'testdir2\testdir3' уже существует
 
 Go back to your original working directory using setwd(). (Recall that
 we created the variable old.dir with the full path for the orginal
