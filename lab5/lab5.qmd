@@ -27,6 +27,9 @@ editor_options:
 ```{r}
 library(dplyr)
 ```
+```{r}
+library(lubridate) #для seconds_to_period
+```
 
 
 ## Подготовка данных
@@ -77,85 +80,114 @@ data_2 %>%
 
 ### 1. Определить небезопасные точки доступа (без шифрования – OPN)
 ```{r}
-data_1 %>%
-  filter(Privacy == ' OPN') 
+not_safety_wifi <- data_1 %>% 
+  filter(grepl("OPN", Privacy)) %>% #grepl - boolean
+  select(BSSID, ESSID) %>%
+  arrange(BSSID) %>%
+  distinct
+not_safety_wifi
 ```
 
 ### 2. Определить производителя для каждого обнаруженного устройства
-через nmap...
-```{r}
 
-```
+00:03:7F Atheros Communications, Inc
+00:25:00 Apple, Inc
+00:26:99 Cisco Systems, Inc
+E0:D9:E3 Eltex Enterprise Ltd
 
 ### 3. Выявить устройства, использующие последнюю версию протокола шифрования WPA3, и названия точек доступа, реализованных на этих устройствах
 ```{r}
-
-WPA3_df <- data_1 %>%
-  filter(Privacy == ' WPA3') 
-
-WPA3_df['ESSID']
+data_1 %>%
+  filter(grepl("WPA3", Privacy)) %>% #есть ли строка WPA3
+  select(BSSID, ESSID, Privacy)
 ```
-Устройств, использующих WPA3, найдено не было
 
-Устройства, использующие WPA2:
-```{r}
-
-WPA3_df <- data_1 %>%
-  filter(Privacy == ' WPA2') 
-
-WPA3_df['ESSID']
-```
 ### 4. Отсортировать точки доступа по интервалу времени, в течение которого они находились на связи, по убыванию.
 ```{r}
-ep1 = as.POSIXct(strptime(data_1$First.time.seen, format='%d-%m-%Y %H:%M'))
-ep2 = as.POSIXct(strptime(data_1$Last.time.seen, format='%d-%m-%Y %H:%M'))
+data_1_intervals <- data_1 %>% 
+  mutate(time_int = Last.time.seen - First.time.seen) #mutate добавляет новые переменные во фрейм данных, сохраняя существующие переменные 
 ```
 ```{r}
-#ep_r = difftime(ep2 - ep1)
-```
-
-
-```{r}
-#d1_razn = difftime((data_1$Last.time.seen) - (data_1$First.time.seen))
+data_1_intervals %>%
+  arrange(desc(time_int)) %>%
+  mutate(time_int = seconds_to_period(time_int)) %>%
+  select(BSSID, First.time.seen, Last.time.seen, time_int) %>% head
 ```
 
 ### 5. Обнаружить топ-10 самых быстрых точек доступа.
 ```{r}
-speed_sort <- data_1[ order (-data_1$Speed), ]
-head(speed_sort, 10)
+speed_desc_sort_10 <- data_1 %>%
+  arrange(
+    desc(Speed)) %>%
+  select(BSSID, ESSID, Speed, Privacy) %>%
+  head(10)
 ```
+```{r}
+speed_desc_sort_10
+```
+
 
 ### 6. Отсортировать точки доступа по частоте отправки запросов (beacons) в единицу времени по их убыванию.
 ```{r}
-data_1[ order (-data_1$X..beacons), ]
+data_1_beacon_sort_desc <- data_1_intervals %>% 
+    mutate(beacon_rate = as.double(X..beacons) / as.integer(time_int)) #as.double преобразует данные в числовые значения 
+```
+
+
+```{r}
+data_1_beacon_sort_desc %>%
+  select(BSSID, ESSID, Privacy, X..beacons, time_int, beacon_rate) %>%
+  filter(!is.infinite(beacon_rate)) %>%
+  arrange(desc(beacon_rate)) %>%
+  head
 ```
 
 
 ## Данные клиентов
 
 ### 1. Определить производителя для каждого обнаруженного устройства
-```{r}
-
-```
+00:23:EB Cisco Systems, Inc
+00:25:00 Apple, Inc.
+00:26:99 Cisco Systems, Inc
+08:3A:2F Guangzhou Juan Intelligent Tech Joint Stock Co.,Ltd
+0C:80:63 Tp-Link Technologies Co.,Ltd.
+DC:09:4C Huawei Technologies Co.,Ltd
+E0:D9:E3 Eltex Enterprise Ltd.
 
 ### 2. Обнаружить устройства, которые НЕ рандомизируют свой MAC адрес
 ```{r}
-
+data_2 %>%
+  filter(grepl("(..:..:..:)(..:..:..)", BSSID) 
+         & !is.na(Probed.ESSIDs)) %>%
+  select(BSSID, Probed.ESSIDs) %>%
+  group_by(BSSID, Probed.ESSIDs) %>%
+  filter(n() > 1) %>%
+  arrange(BSSID) %>%
+  unique()
 ```
 
 ### 3. Кластеризовать запросы от устройств к точкам доступа по их именам. Определить время появления устройства в зоне радиовидимости и время выхода его из нее.
+```{r}
+clusters_requests <- data_2 %>%
+  filter(!is.na(Probed.ESSIDs)) %>% group_by(Station.MAC, Probed.ESSIDs) %>%
+  arrange(First.time.seen)
+```
 ```{r}
 
 ```
 
 ### 4. Оценить стабильность уровня сигнала внури кластера во времени. Выявить наиболее стабильный кластер
+```{r}
+
+```
 
 
 ## Оценка результатов
 
-
+При помощи знания основных функций обработки данных языка R были проанализированы сетевые данные.
 
 ## Вывод
 
+Были проанализированы реальные данные сетевого трафика, собранного с помощью сниффера сетевого трафика.
 
 
