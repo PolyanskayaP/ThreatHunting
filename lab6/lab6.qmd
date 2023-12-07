@@ -109,12 +109,14 @@ df %>% head()
 ```
 
 ```{r}
-
+df <- df %>%
+  mutate(`@timestamp` = as.POSIXct(`@timestamp`, format = "%Y-%m-%dT%H:%M:%OSZ", tz = "UTC")) %>%
+  rename(timestamp = `@timestamp`, metadata = `@metadata`)
 ```
 
 ### 3. Просмотрите общую структуру данных с помощью функции glimpse()
 ```{r}
-
+df %>% glimpse()
 ```
 
 ## Анализ

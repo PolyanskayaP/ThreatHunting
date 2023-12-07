@@ -1342,7 +1342,29 @@ df %>% head()
     5 d347d9a4-bff4-476c-b5a4-d51119f78250         7.4.0 winlogbeat
     6 d347d9a4-bff4-476c-b5a4-d51119f78250         7.4.0 winlogbeat
 
+``` r
+df <- df %>%
+  mutate(`@timestamp` = as.POSIXct(`@timestamp`, format = "%Y-%m-%dT%H:%M:%OSZ", tz = "UTC")) %>%
+  rename(timestamp = `@timestamp`, metadata = `@metadata`)
+```
+
 ### 3. Просмотрите общую структуру данных с помощью функции glimpse()
+
+``` r
+df %>% glimpse()
+```
+
+    Rows: 101,904
+    Columns: 9
+    $ timestamp <dttm> 2019-10-20 20:11:06, 2019-10-20 20:11:07, 2019-10-20 20:11:…
+    $ metadata  <df[,4]> <data.frame[26 x 4]>
+    $ event     <df[,4]> <data.frame[26 x 4]>
+    $ log       <df[,1]> <data.frame[26 x 1]>
+    $ message   <chr> "A token right was adjusted.\n\nSubject:\n\tSecurity ID:\…
+    $ winlog    <df[,16]> <data.frame[26 x 16]>
+    $ ecs       <df[,1]> <data.frame[26 x 1]>
+    $ host      <df[,1]> <data.frame[26 x 1]>
+    $ agent     <df[,5]> <data.frame[26 x 5]>
 
 ## Анализ
 
