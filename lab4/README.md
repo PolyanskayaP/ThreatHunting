@@ -69,13 +69,14 @@ library(dplyr)
 #### 1. Импортируйте данные DNS
 
 ``` r
-df <- read.table("dns.log", header = FALSE, sep = "\t", quote = "", encoding="UTF-8")
+#df <- read.table("dns.log", header = FALSE, sep = "\t", quote = "", encoding="UTF-8")
+df <- read.table(file.path("dns.log"), header = FALSE, sep = "\t", quote = "", encoding="UTF-8")
 ```
 
 #### 2. Добавьте пропущенные данные о структуре данных (назначении столбцов), 3. Преобразуйте данные в столбцах в нужный формат
 
 ``` r
-colnames(df) <- read.csv("header_zeek.csv", header = FALSE, skip = 1)$V1 #новый header с названиями в соответствии с документацией zeek
+colnames(df) <- read.csv(file.path("header_zeek.csv"), header = FALSE, skip = 1)$V1 #новый header с названиями в соответствии с документацией zeek
 ```
 
 #### 4. Просмотрите общую структуру данных с помощью функции glimpse()
