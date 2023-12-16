@@ -53,7 +53,7 @@ library(lubridate) #для seconds_to_period
 ### 1. Импортируйте данные.
 
 ``` r
-all_data <- read.csv('C:/ThreatHunting/lab5/mir.csv-01.csv')
+all_data <- read.csv(file.path("mir.csv-01.csv"))
 ```
 
 ``` r
@@ -786,7 +786,7 @@ head(all_data,180)
     180                               NA
 
 ``` r
-data_1 <- read.csv(file='C:/ThreatHunting/lab5/mir.csv-01.csv',nrows=167)
+data_1 <- read.csv(file=file.path("mir.csv-01.csv"),nrows=167)
 ```
 
 ``` r
@@ -816,7 +816,8 @@ head(data_1)
     6        13   MIREA_HOTSPOT  NA
 
 ``` r
-data_2 <- read.csv(file='C:/ThreatHunting/lab5/mir.csv-01.csv',skip=169)
+#data_2 <- read.csv(file='C:/ThreatHunting/lab5/mir.csv-01.csv',skip=169)
+data_2 <- read.csv(file=file.path("mir.csv-01.csv"),skip=169)
 ```
 
 ``` r
