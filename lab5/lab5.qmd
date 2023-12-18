@@ -43,37 +43,37 @@ head(all_data,180)
 ```
 
 ```{r}
-data_1 <- read.csv(file=file.path("mir.csv-01.csv"),nrows=167)
+df1 <- read.csv(file=file.path("mir.csv-01.csv"),nrows=167)
 ```
 ```{r}
-head(data_1)
+head(df1)
 ```
 
 ```{r}
 #data_2 <- read.csv(file='C:/ThreatHunting/lab5/mir.csv-01.csv',skip=169)
-data_2 <- read.csv(file=file.path("mir.csv-01.csv"),skip=169)
+df2 <- read.csv(file=file.path("mir.csv-01.csv"),skip=169)
 ```
 ```{r}
-head(data_2)
+head(df2)
 ```
 
 ### 2. Привести датасеты в вид “аккуратных данных”, преобразовать типы столбцов в соответствии с типом данных
 ```{r}
-data_1$First.time.seen <- as.POSIXct(data_1$First.time.seen, format=" %Y-%m-%d %H:%M:%S", tz=" UTC ") 
-data_1$Last.time.seen <- as.POSIXct(data_1$Last.time.seen, format=" %Y-%m-%d %H:%M:%S", tz=" UTC ") 
-data_2$First.time.seen <- as.POSIXct(data_2$First.time.seen, format=" %Y-%m-%d %H:%M:%S", tz=" UTC ") 
-data_2$Last.time.seen <- as.POSIXct(data_2$Last.time.seen, format=" %Y-%m-%d %H:%M:%S", tz=" UTC ") 
+df1$First.time.seen <- as.POSIXct(df1$First.time.seen, format=" %Y-%m-%d %H:%M:%S", tz=" UTC ") 
+df1$Last.time.seen <- as.POSIXct(df1$Last.time.seen, format=" %Y-%m-%d %H:%M:%S", tz=" UTC ") 
+df2$First.time.seen <- as.POSIXct(df2$First.time.seen, format=" %Y-%m-%d %H:%M:%S", tz=" UTC ") 
+df2$Last.time.seen <- as.POSIXct(df2$Last.time.seen, format=" %Y-%m-%d %H:%M:%S", tz=" UTC ") 
 ```
 
 ### 3. Просмотрите общую структуру данных с помощью функции glimpse()
-data_1 = анонсы беспроводных точек доступа
+df1 = анонсы беспроводных точек доступа
 ```{r}
-data_1 %>%
+df1 %>%
   glimpse()
 ```
-data_2 = запросы на подключение клиентов к известным им точкам доступа
+df2 = запросы на подключение клиентов к известным им точкам доступа
 ```{r}
-data_2 %>%
+df2 %>%
   glimpse()
 ```
 
@@ -81,9 +81,8 @@ data_2 %>%
 
 ### 1. Определить небезопасные точки доступа (без шифрования – OPN)
 ```{r}
-not_safety_wifi <- data_1 %>% 
+not_safety_wifi <- df1 %>% 
   filter(grepl("OPN", Privacy)) %>% #grepl - boolean
-  select(BSSID, ESSID) %>%
   arrange(BSSID) %>%
   distinct
 not_safety_wifi
@@ -98,18 +97,17 @@ E0:D9:E3 Eltex Enterprise Ltd
 
 ### 3. Выявить устройства, использующие последнюю версию протокола шифрования WPA3, и названия точек доступа, реализованных на этих устройствах
 ```{r}
-data_1 %>%
+df1 %>%
   filter(grepl("WPA3", Privacy)) %>% #есть ли строка WPA3
   select(BSSID, ESSID, Privacy)
 ```
 
 ### 4. Отсортировать точки доступа по интервалу времени, в течение которого они находились на связи, по убыванию.
 ```{r}
-data_1_intervals <- data_1 %>% 
-  mutate(time_int = Last.time.seen - First.time.seen) #mutate добавляет новые переменные во фрейм данных, сохраняя существующие переменные 
+df1_intervals <- df1 %>% mutate(time_int = Last.time.seen - First.time.seen) #mutate добавляет новые переменные во фрейм данных, сохраняя существующие переменные 
 ```
 ```{r}
-data_1_intervals %>%
+df1_intervals %>%
   arrange(desc(time_int)) %>%
   mutate(time_int = seconds_to_period(time_int)) %>%
   select(BSSID, First.time.seen, Last.time.seen, time_int) %>% head
@@ -117,10 +115,9 @@ data_1_intervals %>%
 
 ### 5. Обнаружить топ-10 самых быстрых точек доступа.
 ```{r}
-speed_desc_sort_10 <- data_1 %>%
+speed_desc_sort_10 <- df1 %>%
   arrange(
     desc(Speed)) %>%
-  select(BSSID, ESSID, Speed, Privacy) %>%
   head(10)
 ```
 ```{r}
@@ -130,13 +127,13 @@ speed_desc_sort_10
 
 ### 6. Отсортировать точки доступа по частоте отправки запросов (beacons) в единицу времени по их убыванию.
 ```{r}
-data_1_beacon_sort_desc <- data_1_intervals %>% 
+df1_beacon_sort_desc <- df1_intervals %>% 
     mutate(beacon_rate = as.double(X..beacons) / as.integer(time_int)) #as.double преобразует данные в числовые значения 
 ```
 
 
 ```{r}
-data_1_beacon_sort_desc %>%
+df1_beacon_sort_desc %>%
   select(BSSID, ESSID, Privacy, X..beacons, time_int, beacon_rate) %>%
   filter(!is.infinite(beacon_rate)) %>%
   arrange(desc(beacon_rate)) %>%
@@ -147,6 +144,10 @@ data_1_beacon_sort_desc %>%
 ## Данные клиентов
 
 ### 1. Определить производителя для каждого обнаруженного устройства
+```{r}
+df2 %>% filter(grepl("(..:..:..:)(..:..:..)", BSSID))#все BSSID по определенному шаблону
+```
+
 00:23:EB Cisco Systems, Inc
 00:25:00 Apple, Inc.
 00:26:99 Cisco Systems, Inc
@@ -157,7 +158,7 @@ E0:D9:E3 Eltex Enterprise Ltd.
 
 ### 2. Обнаружить устройства, которые НЕ рандомизируют свой MAC адрес
 ```{r}
-data_2 %>%
+df2 %>%
   filter(grepl("(..:..:..:)(..:..:..)", BSSID) 
          & !is.na(Probed.ESSIDs)) %>%
   select(BSSID, Probed.ESSIDs) %>%
@@ -169,7 +170,7 @@ data_2 %>%
 
 ### 3. Кластеризовать запросы от устройств к точкам доступа по их именам. Определить время появления устройства в зоне радиовидимости и время выхода его из нее.
 ```{r}
-clusters_requests <- data_2 %>%
+clusters_requests <- df2 %>%
   filter(!is.na(Probed.ESSIDs)) %>% group_by(Station.MAC, Probed.ESSIDs) %>%
   arrange(First.time.seen)
 ```
