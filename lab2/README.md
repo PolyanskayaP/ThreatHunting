@@ -93,14 +93,13 @@ starwars %>% distinct(species) %>% n_distinct()
 ### 5. Найти самого высокого персонажа.
 
 ``` r
-starwars %>% filter(height == max(height, na.rm = TRUE))
+starwars %>% filter(height == max(height))
 ```
 
-    # A tibble: 1 × 14
-      name      height  mass hair_color skin_color eye_color birth_year sex   gender
-      <chr>      <int> <dbl> <chr>      <chr>      <chr>          <dbl> <chr> <chr> 
-    1 Yarael P…    264    NA none       white      yellow            NA male  mascu…
-    # ℹ 5 more variables: homeworld <chr>, species <chr>, films <list>,
+    # A tibble: 0 × 14
+    # ℹ 14 variables: name <chr>, height <int>, mass <dbl>, hair_color <chr>,
+    #   skin_color <chr>, eye_color <chr>, birth_year <dbl>, sex <chr>,
+    #   gender <chr>, homeworld <chr>, species <chr>, films <list>,
     #   vehicles <list>, starships <list>
 
 ### 6. Найти всех персонажей ниже 170
@@ -129,23 +128,25 @@ starwars %>% filter(height < 170)
 ### 7. Подсчитать ИМТ (индекс массы тела) для всех персонажей. ИМТ подсчитать по формуле 𝐼 = 𝑚 / ℎ^2 , где 𝑚 – масса (mass), а ℎ – рост (height).
 
 ``` r
-starwars %>% mutate(imt = mass / ((height)^2)) %>%  select (name, height, mass, imt)
+starwars %>% mutate(imt = mass / ((height)^2)) 
 ```
 
-    # A tibble: 87 × 4
-       name               height  mass     imt
-       <chr>               <int> <dbl>   <dbl>
-     1 Luke Skywalker        172    77 0.00260
-     2 C-3PO                 167    75 0.00269
-     3 R2-D2                  96    32 0.00347
-     4 Darth Vader           202   136 0.00333
-     5 Leia Organa           150    49 0.00218
-     6 Owen Lars             178   120 0.00379
-     7 Beru Whitesun lars    165    75 0.00275
-     8 R5-D4                  97    32 0.00340
-     9 Biggs Darklighter     183    84 0.00251
-    10 Obi-Wan Kenobi        182    77 0.00232
+    # A tibble: 87 × 15
+       name     height  mass hair_color skin_color eye_color birth_year sex   gender
+       <chr>     <int> <dbl> <chr>      <chr>      <chr>          <dbl> <chr> <chr> 
+     1 Luke Sk…    172    77 blond      fair       blue            19   male  mascu…
+     2 C-3PO       167    75 <NA>       gold       yellow         112   none  mascu…
+     3 R2-D2        96    32 <NA>       white, bl… red             33   none  mascu…
+     4 Darth V…    202   136 none       white      yellow          41.9 male  mascu…
+     5 Leia Or…    150    49 brown      light      brown           19   fema… femin…
+     6 Owen La…    178   120 brown, gr… light      blue            52   male  mascu…
+     7 Beru Wh…    165    75 brown      light      blue            47   fema… femin…
+     8 R5-D4        97    32 <NA>       white, red red             NA   none  mascu…
+     9 Biggs D…    183    84 black      light      brown           24   male  mascu…
+    10 Obi-Wan…    182    77 auburn, w… fair       blue-gray       57   male  mascu…
     # ℹ 77 more rows
+    # ℹ 6 more variables: homeworld <chr>, species <chr>, films <list>,
+    #   vehicles <list>, starships <list>, imt <dbl>
 
 ### 8. Найти 10 самых “вытянутых” персонажей. “Вытянутость” оценить по отношению массы (mass) к росту (height) персонажей.
 
@@ -172,7 +173,7 @@ starwars %>% mutate(vyt = mass / height) %>%  arrange(desc(vyt)) %>%  head(10)
 ### 9. Найти средний возраст персонажей каждой расы вселенной Звездных войн.
 
 ``` r
-starwars %>% group_by(species) %>% summarize(sr_vozr = mean(birth_year, na.rm = TRUE))
+starwars %>% group_by(species) %>% summarize(sr_vozr = mean(birth_year,na.rm = TRUE ))
 ```
 
     # A tibble: 38 × 2
@@ -204,7 +205,7 @@ starwars %>% group_by(eye_color) %>% summarize(count = n()) %>% arrange(desc(cou
 ### 11. Подсчитать среднюю длину имени в каждой расе вселенной Звездных войн.
 
 ``` r
-starwars %>% group_by(species) %>% summarize(sred_dlin_name = mean(nchar(name), na.rm = TRUE)) 
+starwars %>% group_by(species) %>% summarize(sred_dlin_name = mean(nchar(name))) 
 ```
 
     # A tibble: 38 × 2
