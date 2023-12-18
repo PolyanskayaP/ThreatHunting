@@ -82,8 +82,7 @@ colnames(df) <- read.csv(file.path("header_zeek.csv"), header = FALSE, skip = 1)
 #### 4. Просмотрите общую структуру данных с помощью функции glimpse()
 
 ``` r
-df %>%
-  glimpse()
+df %>%glimpse()
 ```
 
     Rows: 427,935
