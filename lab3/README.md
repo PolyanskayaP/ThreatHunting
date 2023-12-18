@@ -5,7 +5,7 @@
 
 ## Цель
 
-1.  Зекрепить практические навыки использования языка программирования R
+1.  Закрепить практические навыки использования языка программирования R
     для обработки данных
 2.  Закрепить знания основных функций обработки данных экосистемы
     tidyverse языка R
@@ -188,11 +188,14 @@ glimpse(flights)
 ### 5. Сколько компаний-перевозчиков (carrier) учитывают эти наборы данных (представлено в наборах данных)?
 
 ``` r
-airlines %>% 
-  ncol()
+table(flights$carrier) 
 ```
 
-    [1] 2
+
+       9E    AA    AS    B6    DL    EV    F9    FL    HA    MQ    OO    UA    US 
+    18460 32729   714 54635 48110 54173   685  3260   342 26397    32 58665 20536 
+       VX    WN    YV 
+     5162 12275   601 
 
 ### 6. Сколько рейсов принял аэропорт John F Kennedy Intl в мае?
 
@@ -202,7 +205,6 @@ as.character(df) - перевод в строки
 df_id_john <- airports %>%
   filter(name == "John F Kennedy Intl") %>%
   select(faa)
-
 flights %>%
   filter(month == 5 & dest == as.character(df_id_john)) %>%
   nrow()
@@ -213,8 +215,8 @@ flights %>%
 ### 7. Какой самый северный аэропорт?
 
 ``` r
-airports %>%
-  filter(lat == max(lat))
+north_airport <- airports %>% filter(lat == max(lat))
+north_airport
 ```
 
     # A tibble: 1 × 8
@@ -225,8 +227,8 @@ airports %>%
 ### 8. Какой аэропорт самый высокогорный (находится выше всех над уровнем моря)?
 
 ``` r
-airports %>%
-  filter(alt == max(alt))
+high_mount <- airports %>% filter(alt == max(alt))
+high_mount
 ```
 
     # A tibble: 1 × 8
@@ -237,10 +239,7 @@ airports %>%
 ### 9. Какие бортовые номера у самых старых самолетов?
 
 ``` r
-planes %>%
-  arrange(year) %>%
-  head(10) %>%
-  select(tailnum)
+planes %>%arrange(year) %>% head(10) %>% select(tailnum)
 ```
 
     # A tibble: 10 × 1
@@ -260,13 +259,8 @@ planes %>%
 ### 10. Какая средняя температура воздуха была в сентябре в аэропорту John F Kennedy Intl (в градусах Цельсия).
 
 ``` r
-df_id_john <- airports %>%
-  filter(name == "John F Kennedy Intl") %>%
-  select(faa)
-
-weather %>%
-  filter(origin == as.character(df_id_john) & month == 9) %>%
-  summarize(mean_temp = mean(temp, na.rm = TRUE))
+df_id_john <- airports %>% filter(name == "John F Kennedy Intl") %>% select(faa)
+weather %>% filter(origin == as.character(df_id_john) & month == 9) %>%summarize(mean_temp = mean(temp, na.rm = TRUE))
 ```
 
     # A tibble: 1 × 1
@@ -282,7 +276,7 @@ n() нужно для подсчета наблюдений по группам
 flights %>%
   filter(month == 6) %>%
   group_by(carrier) %>%
-  summarize(total_flights = n()) %>%
+  summarize(total_flights = n()) %>% #подсчет наблюдений по группам
   arrange(desc(total_flights)) %>%
   head(1)
 ```
@@ -298,15 +292,15 @@ flights %>%
 flights %>%
   filter(year == 2013) %>%
   group_by(carrier) %>%
-  summarize(total_delays = sum(arr_delay > 0, na.rm = TRUE)) %>%
-  arrange(desc(total_delays)) %>%
+  summarize(zdrk = sum(arr_delay > 0, na.rm = TRUE)) %>%
+  arrange(desc(zdrk)) %>%
   head(1)
 ```
 
     # A tibble: 1 × 2
-      carrier total_delays
-      <chr>          <int>
-    1 EV             24484
+      carrier  zdrk
+      <chr>   <int>
+    1 EV      24484
 
 ## Оценка результатов
 
