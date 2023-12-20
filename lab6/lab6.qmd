@@ -51,24 +51,18 @@ library(xml2)
 library(rvest)
 ```
 
+
 ### 1. Импортируйте данные в R. Это можно выполнить с помощью jsonlite::stream_in(file()) . Датасет находится по адресу https://storage.yandexcloud.net/iamcth-data/dataset.tar.gz.
 
 ```{r}
-url <- "https://storage.yandexcloud.net/iamcth-data/dataset.tar.gz"
-download.file(url, destfile = tf <- tempfile(fileext = ".tar.gz"), mode = "wb")
+url_yand <- "https://storage.yandexcloud.net/iamcth-data/dataset.tar.gz"
+download.file(url_yand, destfile = tf <- tempfile(fileext = ".tar.gz"), mode = "wb")#сохранение во временный файл
 temp_dir <- tempdir()
 untar(tf, exdir = temp_dir)
 json_files <- list.files(temp_dir, pattern="\\.json$", full.names = TRUE, recursive = TRUE)
 df <- stream_in(file(json_files))
 ```
 
-
-
-
-
-
-
-----------
 ```{r}
 #fn <- "https://storage.yandexcloud.net/iamcth-data/dataset.tar.gz"
 #download.file(fn,destfile="tmp.tar.gz")
@@ -84,8 +78,6 @@ df <- stream_in(file(json_files))
 #my_df <- jsonlite::fromJSON(json_str)
 ```
 -----------------
-
-
 ```{r}
 #untar("dataset.tar.gz")
 #df <- read_json('C:/ThreatHunting/lab6/caldera_attack_evals_round1_day1_2019-10-20201108.json')
@@ -147,31 +139,54 @@ df$host %>% glimpse()
 ```{r}
 df$agent %>% glimpse()
 ```
+```{r}
+raskr_df <- df %>%
+  unnest(c(metadata, event, log, winlog, ecs, host, agent), names_sep = ".") #для раскрытия вложенности – tidyr::unnest()
+raskr_df %>% glimpse
+```
+
 
 ### 2. Минимизируйте количество колонок в датафрейме – уберите колоки с единственным значением параметра.
 ```{r}
-
+minimized_df <- raskr_df %>%
+  select(-metadata.beat, -metadata.type, -metadata.version, -metadata.topic, -event.kind, -winlog.api, -agent.ephemeral_id, -agent.hostname, -agent.id, -agent.version, -agent.type) #select с минусом не берет столбцы
+minimized_df %>% glimpse
 ```
 
 ### 3. Какое количество хостов представлено в данном датасете?
-```{r}
 
+```{r}
+uniq_host <- raskr_df %>% select(agent.hostname) %>% unique 
+kolvo_host = count(uniq_host, "agent.hostname")
+kolvo_host
 ```
 
 ### 4. Подготовьте датафрейм с расшифровкой Windows Event_ID, приведите типы данных к типу их значений.
 ```{r}
-
+EventID_page <- xml2::read_html("https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/plan/appendix-l--events-to-monitor")
+df_EventID <- rvest::html_table(EventID_page)[[1]]
+df_EventID %>% glimpse
 ```
+```{r}
+df_EventID <- df_EventID %>% mutate_at(vars(`Legacy Windows Event ID`,`Current Windows Event ID`), as.integer) 
+```
+```{r}
+df_EventID %>% glimpse()
+```
+
 
 ### 5. Есть ли в логе события с высоким и средним уровнем значимости? Сколько их?
 ```{r}
-
+group_pc <- df_EventID %>% group_by(`Potential Criticality`)  
+kolvo_znach = count(group_pc, `Potential Criticality`)
+kolvo_znach %>% filter(`Potential Criticality` == "High" | `Potential Criticality` == "Medium")
 ```
 
 ## Оценка результатов
 
-
+Выполнена задача анализа Wi-Fi-трафика, найдено, как загружать датасеты из интернета напрямую в воспроизводимых отчетах.
 
 ## Вывод
 
+Wi-Fi-трафик можно анализировать при помощи языка программирования R.
 
